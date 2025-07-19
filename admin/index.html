@@ -1669,8 +1669,8 @@
 
             async init() {
                 this.setupEventListeners();
-                await this.loadBlogData();
                 this.checkAuth();
+                await this.loadBlogData();
             }
 
             setupEventListeners() {
@@ -1825,9 +1825,15 @@
             }
 
             showAdminPanel() {
+                console.log('🎛️ Showing admin panel...');
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-layout').style.display = 'block';
                 this.initializeAdminFeatures();
+                
+                // Show posts section by default
+                setTimeout(() => {
+                    this.showSection('posts');
+                }, 100);
             }
 
             initializeAdminFeatures() {
@@ -1854,15 +1860,30 @@
             }
 
             initializeCharts() {
+                console.log('📊 Initializing charts...');
+                
                 // Get real analytics data
                 const analyticsData = this.getAnalyticsData();
                 const subscriberData = this.getSubscriberData();
                 
                 // Blog views chart with real data
-                const blogCtx = document.getElementById('blog-chart').getContext('2d');
+                const blogChartElement = document.getElementById('blog-chart');
+                if (!blogChartElement) {
+                    console.warn('⚠️ Blog chart element not found');
+                    return;
+                }
+                
+                // Destroy existing chart if it exists
+                if (window.blogChart) {
+                    window.blogChart.destroy();
+                }
+                
+                const blogCtx = blogChartElement.getContext('2d');
                 const last7Days = this.getLast7DaysData(analyticsData);
                 
-                new Chart(blogCtx, {
+                console.log('📊 Creating blog chart with data:', last7Days);
+                
+                window.blogChart = new Chart(blogCtx, {
                     type: 'line',
                     data: {
                         labels: last7Days.labels,
@@ -1906,7 +1927,18 @@
                 });
 
                 // Email performance chart with real data
-                const emailCtx = document.getElementById('email-chart').getContext('2d');
+                const emailChartElement = document.getElementById('email-chart');
+                if (!emailChartElement) {
+                    console.warn('⚠️ Email chart element not found');
+                    return;
+                }
+                
+                // Destroy existing chart if it exists
+                if (window.emailChart) {
+                    window.emailChart.destroy();
+                }
+                
+                const emailCtx = emailChartElement.getContext('2d');
                 
                 // Ensure data is arrays
                 const safeSubscriberData = Array.isArray(subscriberData) ? subscriberData : [];
@@ -1931,7 +1963,7 @@
                         </div>
                     `;
                 } else {
-                    new Chart(emailCtx, {
+                    window.emailChart = new Chart(emailCtx, {
                         type: 'doughnut',
                         data: {
                             labels: ['Newsletter Signups', 'Social Media Clicks', 'Etsy Store Visits', 'Blog Post Clicks'],
@@ -2042,12 +2074,10 @@
                 // Update UI after data is loaded
                 console.log('🔄 Updating dashboard stats...');
                 this.updateDashboardStats();
-                if (this.currentUser) {
-                    console.log('👤 User logged in, displaying posts...');
-                    this.displayPosts();
-                } else {
-                    console.log('👤 No user logged in yet');
-                }
+                
+                // Always display posts if we're in admin panel
+                console.log('📋 Displaying posts...');
+                this.displayPosts();
             }
 
             updateDashboardStats() {
