@@ -11,7 +11,25 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <!-- Admin Configuration (Keep Private) -->
-    <script src="config.js"></script>
+    <script>
+        // Fallback config if config.js fails to load
+        window.ADMIN_CONFIG = window.ADMIN_CONFIG || {
+            credentials: [
+                {
+                    username: 'admin-beliz',
+                    password: 'Beliz832.',
+                    role: 'admin',
+                    lastLogin: null
+                }
+            ],
+            security: {
+                maxLoginAttempts: 3,
+                lockoutDuration: 15,
+                sessionTimeout: 120
+            }
+        };
+    </script>
+    <script src="config.js" onerror="console.warn('⚠️ Config.js failed to load, using fallback')"></script>
     
     <style>
         * {
@@ -1656,53 +1674,89 @@
             }
 
             setupEventListeners() {
+                console.log('🔧 Setting up event listeners...');
+                
+                // Safe element finder
+                const getElement = (id) => {
+                    const el = document.getElementById(id);
+                    if (!el) {
+                        console.warn(`⚠️  Element not found: ${id}`);
+                    }
+                    return el;
+                };
+
                 // Login form
-                document.getElementById('login-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleLogin();
-                });
+                const loginForm = getElement('login-form');
+                if (loginForm) {
+                    loginForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleLogin();
+                    });
+                }
 
                 // Logout button
-                document.getElementById('logout-btn').addEventListener('click', () => {
-                    this.handleLogout();
-                });
+                const logoutBtn = getElement('logout-btn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', () => {
+                        this.handleLogout();
+                    });
+                }
 
                 // Navigation
-                document.querySelectorAll('.nav-item').forEach(item => {
+                const navItems = document.querySelectorAll('.nav-item');
+                console.log(`🧭 Found ${navItems.length} navigation items`);
+                navItems.forEach(item => {
                     item.addEventListener('click', (e) => {
                         e.preventDefault();
                         const section = e.currentTarget.dataset.section;
+                        console.log(`🔄 Navigating to section: ${section}`);
                         this.showSection(section);
                     });
                 });
 
                 // Mobile menu
-                document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-                    document.getElementById('sidebar').classList.toggle('open');
-                });
+                const mobileMenuBtn = getElement('mobile-menu-btn');
+                const sidebar = getElement('sidebar');
+                if (mobileMenuBtn && sidebar) {
+                    mobileMenuBtn.addEventListener('click', () => {
+                        sidebar.classList.toggle('open');
+                    });
+                }
 
                 // Post form
-                document.getElementById('post-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handlePostSubmit();
-                });
+                const postForm = getElement('post-form');
+                if (postForm) {
+                    postForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handlePostSubmit();
+                    });
+                }
 
                 // Enhanced form functionality
                 this.setupEnhancedPostForm();
 
                 // File upload
-                document.getElementById('post-image-upload').addEventListener('change', (e) => {
-                    this.handleImageUpload(e);
-                });
+                const imageUpload = getElement('post-image-upload');
+                if (imageUpload) {
+                    imageUpload.addEventListener('change', (e) => {
+                        this.handleImageUpload(e);
+                    });
+                }
 
                 // Search and filter
-                document.getElementById('search-posts').addEventListener('input', (e) => {
-                    this.filterPosts();
-                });
+                const searchPosts = getElement('search-posts');
+                if (searchPosts) {
+                    searchPosts.addEventListener('input', (e) => {
+                        this.filterPosts();
+                    });
+                }
 
-                document.getElementById('filter-category').addEventListener('change', (e) => {
-                    this.filterPosts();
-                });
+                const filterCategory = getElement('filter-category');
+                if (filterCategory) {
+                    filterCategory.addEventListener('change', (e) => {
+                        this.filterPosts();
+                    });
+                }
             }
 
             checkAuth() {
@@ -1845,12 +1899,17 @@
 
                 // Email performance chart with real data
                 const emailCtx = document.getElementById('email-chart').getContext('2d');
-                const totalSubscribers = subscriberData.length;
-                const totalEvents = analyticsData.length;
-                const newsletterSignups = analyticsData.filter(event => event.name === 'newsletter_signup_attempt' || event.name === 'newsletter_signup_success').length;
-                const socialMediaClicks = analyticsData.filter(event => event.name === 'social_media_click').length;
-                const etsyClicks = analyticsData.filter(event => event.name === 'etsy_link_click').length;
-                const blogClicks = analyticsData.filter(event => event.name === 'blog_post_click').length;
+                
+                // Ensure data is arrays
+                const safeSubscriberData = Array.isArray(subscriberData) ? subscriberData : [];
+                const safeAnalyticsData = Array.isArray(analyticsData) ? analyticsData : [];
+                
+                const totalSubscribers = safeSubscriberData.length;
+                const totalEvents = safeAnalyticsData.length;
+                const newsletterSignups = safeAnalyticsData.filter(event => event && (event.name === 'newsletter_signup_attempt' || event.name === 'newsletter_signup_success')).length;
+                const socialMediaClicks = safeAnalyticsData.filter(event => event && event.name === 'social_media_click').length;
+                const etsyClicks = safeAnalyticsData.filter(event => event && event.name === 'etsy_link_click').length;
+                const blogClicks = safeAnalyticsData.filter(event => event && event.name === 'blog_post_click').length;
                 
                 // If no real data, show placeholder
                 if (totalEvents === 0) {
@@ -1898,6 +1957,12 @@
             }
 
             getLast7DaysData(analyticsData) {
+                console.log('📊 getLast7DaysData called with:', analyticsData);
+                
+                // Ensure analyticsData is an array
+                const safeAnalyticsData = Array.isArray(analyticsData) ? analyticsData : [];
+                console.log('📊 Safe analytics data length:', safeAnalyticsData.length);
+                
                 const today = new Date();
                 const last7Days = [];
                 const labels = [];
@@ -1912,16 +1977,16 @@
                 
                 // Count events for each day
                 const pageViews = last7Days.map(day => {
-                    return analyticsData.filter(event => 
-                        event.name === 'page_view' && 
-                        new Date(event.timestamp).toDateString() === day
+                    return safeAnalyticsData.filter(event => 
+                        event && event.name === 'page_view' && 
+                        event.timestamp && new Date(event.timestamp).toDateString() === day
                     ).length;
                 });
                 
                 const blogClicks = last7Days.map(day => {
-                    return analyticsData.filter(event => 
-                        event.name === 'blog_post_click' && 
-                        new Date(event.timestamp).toDateString() === day
+                    return safeAnalyticsData.filter(event => 
+                        event && event.name === 'blog_post_click' && 
+                        event.timestamp && new Date(event.timestamp).toDateString() === day
                     ).length;
                 });
                 
@@ -3342,7 +3407,11 @@
         }
 
         // Initialize admin panel
-        const admin = new SumaAdmin();
+        // Initialize the admin panel when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM loaded, initializing admin panel...');
+            window.admin = new SumaAdmin();
+        });
 
         // Make some functions global for onclick handlers
         window.admin = admin;
