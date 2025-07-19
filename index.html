@@ -21,11 +21,8 @@
     <meta property="twitter:description" content="Handcrafted chakra massage oils and artisan ceramic diffusers from Turkish atelier.">
     <meta property="twitter:image" content="https://sumaapothecary.com/logo.png">
 
-    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="canonical" href="https://sumaapothecary.com/">
-    
-    <!-- EmailJS CDN -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     
     <style>
         * {
@@ -334,23 +331,27 @@
             display: flex;
             gap: 1rem;
             margin-top: 1rem;
+            justify-content: center;
         }
 
         .social-links a {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
             background: #d97706;
             border-radius: 50%;
-            text-align: center;
-            line-height: 40px;
             color: white;
             text-decoration: none;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .social-links a:hover {
             background: #b45309;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
         }
 
         .footer-bottom {
@@ -399,13 +400,7 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .blog-post:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
         }
 
         .blog-post:hover {
@@ -453,60 +448,32 @@
 
         .blog-post-meta {
             display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .read-more-btn {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+        }
+
+        .read-more-btn:hover {
+            background: linear-gradient(135deg, #b45309, #92400e);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
+        }
             justify-content: space-between;
             align-items: center;
             font-size: 0.9rem;
             color: #999;
-        }
-
-        /* Blog Detail Section */
-        .blog-detail {
-            padding: 6rem 0;
-            background: white;
-            min-height: 80vh;
-        }
-
-        .blog-detail article {
-            max-width: 800px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
-
-        .blog-detail h1 {
-            font-size: 2.5rem;
-            color: #92400e;
-            margin-bottom: 1rem;
-        }
-
-        .blog-detail .category {
-            display: inline-block;
-            background: #fbbf24;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
-
-        .blog-detail p {
-            margin-bottom: 1.5rem;
-            color: #374151;
-        }
-
-        .blog-detail h2 {
-            color: #92400e;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .blog-detail ul {
-            margin-bottom: 1.5rem;
-            padding-left: 2rem;
-        }
-
-        .blog-detail li {
-            margin-bottom: 0.5rem;
-            color: #374151;
         }
 
         /* Responsive Design */
@@ -603,8 +570,13 @@
                     <span>Suma Apothecary</span>
                 </a>
                 <div class="nav-buttons">
-                    <button class="btn btn-secondary" onclick="showBlog()">📝 Blog</button>
-                    <a href="https://www.etsy.com/shop/SumaApothecary" target="_blank" class="btn btn-primary">🛍️ Visit Shop</a>
+                    <button class="btn btn-secondary" onclick="showBlog()">Blog</button>
+                    <a href="https://www.etsy.com/shop/SumaApothecary" target="_blank" class="btn btn-primary">
+                        Visit Shop 
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 8px;">
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>
@@ -628,10 +600,13 @@
                     </p>
                     <div class="hero-buttons">
                         <a href="https://www.etsy.com/shop/SumaApothecary" target="_blank" class="btn btn-primary">
-                            🔗 Explore Our Collection
+                            Explore Our Collection
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 8px;">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                            </svg>
                         </a>
                         <button class="btn btn-secondary" onclick="showBlog()">
-                            📝 Wellness Blog
+                            Wellness Blog
                         </button>
                     </div>
                 </div>
@@ -697,53 +672,42 @@
                 </p>
                 
                 <div class="blog-posts">
-                    <article class="blog-post" onclick="openBlogPost('chakra-guide')">
+                    <article class="blog-post" onclick="showBlogDetail('chakra')">
                         <div class="blog-post-image">Chakra Guide</div>
                         <div class="blog-post-content">
                             <span class="blog-post-category">Chakra Guide</span>
                             <h3>Understanding the Seven Chakras: A Complete Guide</h3>
                             <p>Discover the ancient wisdom of chakras and how they influence your physical, emotional, and spiritual well-being.</p>
                             <div class="blog-post-meta">
-                                <button class="read-more-btn" onclick="event.stopPropagation(); openBlogPost('chakra-guide')">Read More →</button>
+                                <button class="read-more-btn">Read More →</button>
                             </div>
                         </div>
                     </article>
                     
-                    <article class="blog-post" onclick="openBlogPost('aromatherapy')">
+                    <article class="blog-post" onclick="showBlogDetail('aromatherapy')">
                         <div class="blog-post-image">Aromatherapy</div>
                         <div class="blog-post-content">
                             <span class="blog-post-category">Aromatherapy</span>
                             <h3>Aromatherapy for Beginners: Essential Oils Guide</h3>
                             <p>Start your aromatherapy journey with this comprehensive guide to essential oils and their healing properties.</p>
                             <div class="blog-post-meta">
-                                <button class="read-more-btn" onclick="event.stopPropagation(); openBlogPost('aromatherapy')">Read More →</button>
+                                <button class="read-more-btn">Read More →</button>
                             </div>
                         </div>
                     </article>
                     
-                    <article class="blog-post" onclick="openBlogPost('product-care')">
+                    <article class="blog-post" onclick="showBlogDetail('product-care')">
                         <div class="blog-post-image">Product Care</div>
                         <div class="blog-post-content">
                             <span class="blog-post-category">Product Care</span>
                             <h3>How to Care for Your Ceramic Diffuser</h3>
                             <p>Keep your handcrafted ceramic diffuser in perfect condition with these simple care and maintenance tips.</p>
                             <div class="blog-post-meta">
-                                <button class="read-more-btn" onclick="event.stopPropagation(); openBlogPost('product-care')">Read More →</button>
+                                <button class="read-more-btn">Read More →</button>
                             </div>
                         </div>
                     </article>
                 </div>
-            </div>
-        </div>
-
-        <!-- Blog Post Detail Section -->
-        <div id="blog-detail-section" class="blog-detail" style="display: none;">
-            <div class="container">
-                <button class="btn btn-secondary" onclick="showBlog()" style="margin-bottom: 2rem;">← Back to Blog</button>
-                
-                <article id="blog-detail-content">
-                    <!-- Dynamic content will be loaded here -->
-                </article>
             </div>
         </div>
     </main>
@@ -765,6 +729,7 @@
                     <ul class="footer-links">
                         <li><a href="https://www.etsy.com/shop/SumaApothecary" target="_blank">Our Etsy Shop</a></li>
                         <li><a href="#" onclick="showBlog()">Wellness Blog</a></li>
+                        <li><a href="mailto:contact@sumaapothecary.com">Contact Us</a></li>
                     </ul>
                 </div>
                 
@@ -778,10 +743,14 @@
                         </a>
                         <a href="https://www.pinterest.com/sumaapothecary" target="_blank" aria-label="Follow us on Pinterest">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24c6.624 0 11.99-5.367 11.99-12.013C24.007 5.367 18.641.001.017.001z"/>
+                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.347-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"/>
                             </svg>
                         </a>
-                        <a href="https://www.etsy.com/shop/SumaApothecary" target="_blank" aria-label="Visit our Etsy shop">🛍️</a>
+                        <a href="https://www.etsy.com/shop/SumaApothecary" target="_blank" aria-label="Visit our Etsy shop">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9.16033 4.038c-.096.007-.19.021-.283.042-.304.07-.556.187-.742.35-.302.266-.49.638-.518 1.036-.017.24.02.48.108.708.165.418.463.748.84.93.18.087.38.134.58.134.2 0 .4-.047.58-.134.377-.182.675-.512.84-.93.088-.228.125-.468.108-.708-.028-.398-.216-.77-.518-1.036-.186-.163-.438-.28-.742-.35-.093-.021-.187-.035-.283-.042zm4.68 0c-.096.007-.19.021-.283.042-.304.07-.556.187-.742.35-.302.266-.49.638-.518 1.036-.017.24.02.48.108.708.165.418.463.748.84.93.18.087.38.134.58.134.2 0 .4-.047.58-.134.377-.182.675-.512.84-.93.088-.228.125-.468.108-.708-.028-.398-.216-.77-.518-1.036-.186-.163-.438-.28-.742-.35-.093-.021-.187-.035-.283-.042z"/>
+                            </svg>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -793,127 +762,17 @@
     </footer>
 
     <script>
-        // EmailJS initialization
-        (function(){
-            emailjs.init("YOUR_PUBLIC_KEY"); // Will be configured
-        })();
-
         // Navigation Functions
         function showHome() {
             document.getElementById('home-section').style.display = 'block';
             document.getElementById('blog-section').style.display = 'none';
-            document.getElementById('blog-detail-section').style.display = 'none';
             window.scrollTo(0, 0);
         }
 
         function showBlog() {
             document.getElementById('home-section').style.display = 'none';
             document.getElementById('blog-section').style.display = 'block';
-            document.getElementById('blog-detail-section').style.display = 'none';
             window.scrollTo(0, 0);
-        }
-
-        function showBlogDetail() {
-            document.getElementById('home-section').style.display = 'none';
-            document.getElementById('blog-section').style.display = 'none';
-            document.getElementById('blog-detail-section').style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-
-        // Blog Post Data
-        const blogPosts = {
-            'chakra-guide': {
-                title: 'Understanding the Seven Chakras: A Complete Guide',
-                category: 'Chakra Guide',
-                content: `
-                    <p>The chakra system is an ancient wisdom tradition that has guided spiritual seekers for thousands of years. Understanding your chakras can transform your approach to wellness, healing, and personal growth.</p>
-                    
-                    <h2>What Are Chakras?</h2>
-                    <p>Chakras are energy centers located throughout your body. The word "chakra" comes from Sanskrit and means "wheel" or "disk," referring to the spinning energy that flows through these centers.</p>
-                    
-                    <h2>The Seven Main Chakras</h2>
-                    <ul>
-                        <li><strong>Root Chakra (Muladhara):</strong> Located at the base of the spine, governs survival and grounding</li>
-                        <li><strong>Sacral Chakra (Svadhisthana):</strong> Located below the navel, governs creativity and sexuality</li>
-                        <li><strong>Solar Plexus Chakra (Manipura):</strong> Located above the navel, governs personal power</li>
-                        <li><strong>Heart Chakra (Anahata):</strong> Located at the center of the chest, governs love and compassion</li>
-                        <li><strong>Throat Chakra (Vishuddha):</strong> Located at the throat, governs communication</li>
-                        <li><strong>Third Eye Chakra (Ajna):</strong> Located between the eyebrows, governs intuition</li>
-                        <li><strong>Crown Chakra (Sahasrara):</strong> Located at the top of the head, governs spiritual connection</li>
-                    </ul>
-                    
-                    <h2>Balancing Your Chakras</h2>
-                    <p>When chakras are balanced, energy flows freely through your body, promoting physical health, emotional stability, and spiritual growth. Our handcrafted chakra oils are specifically blended to support each energy center.</p>
-                    
-                    <p>Start your chakra balancing journey today with our authentic Turkish-made products, crafted with love and intention in our atelier.</p>
-                `
-            },
-            'aromatherapy': {
-                title: 'Aromatherapy for Beginners: Essential Oils Guide',
-                category: 'Aromatherapy',
-                content: `
-                    <p>Aromatherapy is the practice of using natural plant extracts to promote health and well-being. Essential oils, the heart of aromatherapy, have been used for thousands of years for their therapeutic properties.</p>
-                    
-                    <h2>Getting Started with Essential Oils</h2>
-                    <p>Essential oils are concentrated plant extracts that capture the plant's scent and beneficial properties. When used properly, they can support physical healing, emotional balance, and spiritual wellness.</p>
-                    
-                    <h2>Popular Essential Oils and Their Benefits</h2>
-                    <ul>
-                        <li><strong>Lavender:</strong> Promotes relaxation and better sleep</li>
-                        <li><strong>Peppermint:</strong> Energizes and helps with focus</li>
-                        <li><strong>Eucalyptus:</strong> Supports respiratory health</li>
-                        <li><strong>Tea Tree:</strong> Natural antiseptic properties</li>
-                        <li><strong>Frankincense:</strong> Promotes meditation and spiritual connection</li>
-                        <li><strong>Rose:</strong> Opens the heart chakra and promotes self-love</li>
-                    </ul>
-                    
-                    <h2>Safe Usage Tips</h2>
-                    <p>Always dilute essential oils with a carrier oil before applying to skin. Our ceramic diffusers provide a safe and beautiful way to enjoy aromatherapy in your home.</p>
-                    
-                    <p>Each of our handcrafted diffusers is designed to disperse essential oils evenly, creating a sacred atmosphere in your space.</p>
-                `
-            },
-            'product-care': {
-                title: 'How to Care for Your Ceramic Diffuser',
-                category: 'Product Care',
-                content: `
-                    <p>Your handcrafted ceramic diffuser is a work of art that deserves proper care. With the right maintenance, it will serve you beautifully for years to come.</p>
-                    
-                    <h2>Daily Care</h2>
-                    <p>After each use, gently wipe the interior with a soft, damp cloth. This prevents oil residue from building up and maintains the purity of your aromatherapy experience.</p>
-                    
-                    <h2>Deep Cleaning</h2>
-                    <ul>
-                        <li>Fill the diffuser with warm water and a few drops of white vinegar</li>
-                        <li>Let it sit for 10-15 minutes</li>
-                        <li>Gently scrub with a soft brush if needed</li>
-                        <li>Rinse thoroughly with clean water</li>
-                        <li>Dry completely before next use</li>
-                    </ul>
-                    
-                    <h2>Storage Tips</h2>
-                    <p>When not in use, store your diffuser in a cool, dry place. Avoid extreme temperatures and direct sunlight, which can affect the ceramic over time.</p>
-                    
-                    <h2>Troubleshooting</h2>
-                    <p>If your diffuser seems less effective, check for mineral buildup from hard water. Regular cleaning with vinegar will restore its performance.</p>
-                    
-                    <p>Remember, each piece is handcrafted in our Turkish atelier with love and care. Treat it with the same intention, and it will enhance your wellness journey for years to come.</p>
-                `
-            }
-        };
-
-        // Open Blog Post Function
-        function openBlogPost(postId) {
-            const post = blogPosts[postId];
-            if (post) {
-                const contentDiv = document.getElementById('blog-detail-content');
-                contentDiv.innerHTML = `
-                    <span class="category">${post.category}</span>
-                    <h1>${post.title}</h1>
-                    ${post.content}
-                `;
-                showBlogDetail();
-            }
         }
 
         // Newsletter Subscription with EmailJS
@@ -934,25 +793,15 @@
             submitBtn.disabled = true;
             
             try {
-                // EmailJS integration - Send email notification
-                const templateParams = {
-                    to_email: 'contact@sumaapothecary.com',
-                    from_email: email,
-                    message: `New newsletter subscription from: ${email}`,
-                    subject: 'New Newsletter Subscription - Suma Apothecary'
-                };
-                
-                // Uncomment when EmailJS is configured
-                // await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
-                
-                // For now, simulate success (remove this when EmailJS is configured)
+                // EmailJS integration (will be configured)
+                // For now, simulate success
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 
                 // Show success message
                 successMsg.style.display = 'block';
                 document.getElementById('email-input').value = '';
                 
-                // Track subscription
+                // Track subscription (you can add analytics here)
                 console.log('Newsletter subscription:', email);
                 
             } catch (error) {
