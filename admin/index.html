@@ -1467,9 +1467,24 @@
                     });
                 }
 
+                // Check if there's any real data
+                const hasRealData = last7Days.some(day => day.views > 0 || day.clicks > 0);
+
                 // Destroy existing chart if it exists
                 if (window.blogChart) {
                     window.blogChart.destroy();
+                }
+
+                if (!hasRealData) {
+                    // Show "No data yet" message instead of empty chart
+                    ctx.parentElement.innerHTML = `
+                        <h3 style="margin-bottom: 1rem; color: #92400e;">Blog Post Views Chart</h3>
+                        <div style="text-align: center; padding: 3rem; color: #666; background: #f9fafb; border-radius: 8px; border: 2px dashed #d1d5db;">
+                            <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; color: #d1d5db;"></i>
+                            <p>No analytics data yet. Start getting visitors to see charts here!</p>
+                        </div>
+                    `;
+                    return;
                 }
 
                 window.blogChart = new Chart(ctx, {
@@ -1527,6 +1542,21 @@
                     etsyClicks: analyticsData.etsyClicks,
                     blogEngagement: analyticsData.blogClicks
                 };
+
+                // Check if there's any real engagement data
+                const totalEngagement = emailData.signups + emailData.socialClicks + emailData.etsyClicks + emailData.blogEngagement;
+
+                if (totalEngagement === 0) {
+                    // Show "No data yet" message instead of empty chart
+                    ctx.parentElement.innerHTML = `
+                        <h3 style="margin-bottom: 1rem; color: #92400e;">Email Campaign Performance</h3>
+                        <div style="text-align: center; padding: 3rem; color: #666; background: #f9fafb; border-radius: 8px; border: 2px dashed #d1d5db;">
+                            <i class="fas fa-chart-pie" style="font-size: 3rem; margin-bottom: 1rem; color: #d1d5db;"></i>
+                            <p>No engagement data yet. User interactions will appear here!</p>
+                        </div>
+                    `;
+                    return;
+                }
 
                 window.emailChart = new Chart(ctx, {
                     type: 'doughnut',
@@ -1588,7 +1618,10 @@
                 if (sectionName === 'subscribers') {
                     this.loadSubscribersData();
                 } else if (sectionName === 'dashboard') {
-                    this.updateDashboardStats();
+                    // Small delay to ensure DOM is ready for charts
+                    setTimeout(() => {
+                        this.updateDashboardStats();
+                    }, 100);
                 }
             }
 
@@ -1779,12 +1812,31 @@
                     localStorage.removeItem('suma_newsletter_subscribers');
                     localStorage.setItem('suma_subscriber_count', '0');
                     
+                    // Reset chart containers to their original state
+                    this.resetChartContainers();
+                    
                     // Refresh dashboard
                     this.updateDashboardStats();
                     this.loadSubscribersData();
                     
                     this.showNotification('All analytics data has been reset!', 'success');
                 }
+            }
+
+            resetChartContainers() {
+                // Reset blog chart container
+                const blogChartContainer = document.querySelector('#blog-chart').parentElement;
+                blogChartContainer.innerHTML = `
+                    <h3 style="margin-bottom: 1rem; color: #92400e;">Blog Post Views Chart</h3>
+                    <canvas id="blog-chart" width="400" height="200"></canvas>
+                `;
+
+                // Reset email chart container  
+                const emailChartContainer = document.querySelector('#email-chart').parentElement;
+                emailChartContainer.innerHTML = `
+                    <h3 style="margin-bottom: 1rem; color: #92400e;">Email Campaign Performance</h3>
+                    <canvas id="email-chart" width="400" height="200"></canvas>
+                `;
             }
 
             displayPosts() {
