@@ -762,22 +762,22 @@
                     <i class="fas fa-chart-line"></i> Dashboard
                 </a>
                 <a href="#" class="nav-item" data-section="posts">
-                    <i class="fas fa-edit"></i> Blog Yazıları
+                    <i class="fas fa-edit"></i> Blog Posts
                 </a>
                 <a href="#" class="nav-item" data-section="new-post">
-                    <i class="fas fa-plus-circle"></i> Yeni Yazı
+                    <i class="fas fa-plus-circle"></i> New Post
                 </a>
                 <a href="#" class="nav-item" data-section="media">
-                    <i class="fas fa-images"></i> Medya
+                    <i class="fas fa-images"></i> Media
                 </a>
                 <a href="#" class="nav-item" data-section="subscribers">
-                    <i class="fas fa-users"></i> Aboneler
+                    <i class="fas fa-users"></i> Subscribers
                 </a>
                 <a href="#" class="nav-item" data-section="emails">
-                    <i class="fas fa-envelope"></i> Email Kampanyaları
+                    <i class="fas fa-envelope"></i> Email Campaigns
                 </a>
                 <a href="#" class="nav-item" data-section="settings">
-                    <i class="fas fa-cog"></i> Ayarlar
+                    <i class="fas fa-cog"></i> Settings
                 </a>
             </div>
         </nav>
@@ -805,35 +805,35 @@
             <section id="dashboard-section" class="content-section active">
                 <div class="section-header">
                     <h2 class="section-title">Dashboard</h2>
-                    <p class="section-subtitle">Blog ve email istatistikleriniz</p>
+                    <p class="section-subtitle">Your blog and email analytics</p>
                 </div>
                 <div class="section-content">
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-number" id="total-posts">0</div>
-                            <div class="stat-label">Toplam Blog Yazısı</div>
+                            <div class="stat-label">Total Blog Posts</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number" id="total-subscribers">0</div>
-                            <div class="stat-label">Email Abonesi</div>
+                            <div class="stat-label">Email Subscribers</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number" id="monthly-views">0</div>
-                            <div class="stat-label">Aylık Görüntüleme</div>
+                            <div class="stat-label">Monthly Views</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number" id="email-open-rate">0%</div>
-                            <div class="stat-label">Email Açılma Oranı</div>
+                            <div class="stat-label">Email Open Rate</div>
                         </div>
                     </div>
 
                     <div class="chart-container">
-                        <h3 style="margin-bottom: 1rem; color: #92400e;">Blog Yazısı Görüntülenme Grafigi</h3>
+                        <h3 style="margin-bottom: 1rem; color: #92400e;">Blog Post Views Chart</h3>
                         <canvas id="blog-chart" width="400" height="200"></canvas>
                     </div>
 
                     <div class="chart-container">
-                        <h3 style="margin-bottom: 1rem; color: #92400e;">Email Kampanya Performansı</h3>
+                        <h3 style="margin-bottom: 1rem; color: #92400e;">Email Campaign Performance</h3>
                         <canvas id="email-chart" width="400" height="200"></canvas>
                     </div>
                 </div>
@@ -842,21 +842,21 @@
             <!-- Posts Section -->
             <section id="posts-section" class="content-section">
                 <div class="section-header">
-                    <h2 class="section-title">Blog Yazıları</h2>
-                    <p class="section-subtitle">Mevcut yazılarınızı yönetin</p>
+                    <h2 class="section-title">Blog Posts</h2>
+                    <p class="section-subtitle">Manage your existing posts</p>
                 </div>
                 <div class="section-content">
                     <div class="search-filters">
-                        <input type="text" class="search-input" placeholder="Yazı ara..." id="search-posts">
+                        <input type="text" class="search-input" placeholder="Search posts..." id="search-posts">
                         <select class="filter-select" id="filter-category">
-                            <option value="">Tüm Kategoriler</option>
+                            <option value="">All Categories</option>
                             <option value="Chakra Guide">Chakra Guide</option>
                             <option value="Aromatherapy">Aromatherapy</option>
                             <option value="Product Care">Product Care</option>
                             <option value="Wellness Tips">Wellness Tips</option>
                         </select>
                         <button class="btn btn-primary" onclick="admin.showSection('new-post')">
-                            <i class="fas fa-plus"></i> Yeni Yazı
+                            <i class="fas fa-plus"></i> New Post
                         </button>
                     </div>
                     <div id="posts-list"></div>
@@ -867,8 +867,8 @@
             <!-- New Post Section -->
             <section id="new-post-section" class="content-section">
                 <div class="section-header">
-                    <h2 class="section-title">Yeni Blog Yazısı</h2>
-                    <p class="section-subtitle">Yeni bir blog yazısı oluşturun</p>
+                    <h2 class="section-title">New Blog Post</h2>
+                    <p class="section-subtitle">Create a new blog post</p>
                 </div>
                 <div class="section-content">
                     <form id="post-form">
@@ -892,8 +892,8 @@
                         </div>
                         
                         <div class="form-group full-width">
-                            <label for="post-title">Başlık:</label>
-                            <input type="text" id="post-title" placeholder="Blog yazısının başlığı" required>
+                            <label for="post-title">Title:</label>
+                            <input type="text" id="post-title" placeholder="Blog post title" required>
                         </div>
                         
                         <div class="form-group full-width">
@@ -928,13 +928,13 @@
 
                         <div class="btn-group">
                             <button type="button" class="btn btn-secondary" id="save-draft">
-                                <i class="fas fa-save"></i> Taslak Kaydet
+                                <i class="fas fa-save"></i> Save Draft
                             </button>
                             <button type="button" class="btn btn-primary" id="preview-post">
-                                <i class="fas fa-eye"></i> Önizleme
+                                <i class="fas fa-eye"></i> Preview
                             </button>
                             <button type="submit" class="btn btn-success">
-                                <i class="fas fa-paper-plane"></i> Yayınla
+                                <i class="fas fa-paper-plane"></i> Publish
                             </button>
                         </div>
                     </form>
@@ -945,13 +945,13 @@
             <!-- Media Section -->
             <section id="media-section" class="content-section">
                 <div class="section-header">
-                    <h2 class="section-title">Medya Kütüphanesi</h2>
-                    <p class="section-subtitle">Yüklediğiniz görselleri yönetin</p>
+                    <h2 class="section-title">Media Library</h2>
+                    <p class="section-subtitle">Manage your uploaded images</p>
                 </div>
                 <div class="section-content">
                     <p style="text-align: center; color: #666; padding: 3rem;">
                         <i class="fas fa-images" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i><br>
-                        Medya kütüphanesi geliştiriliyor...
+                        Media library is under development...
                     </p>
                 </div>
             </section>
@@ -959,50 +959,50 @@
             <!-- Subscribers Section -->
             <section id="subscribers-section" class="content-section">
                 <div class="section-header">
-                    <h2 class="section-title">Email Aboneleri</h2>
-                    <p class="section-subtitle">Newsletter abonelerinizi yönetin</p>
+                    <h2 class="section-title">Email Subscribers</h2>
+                    <p class="section-subtitle">Manage your newsletter subscribers</p>
                 </div>
                 <div class="section-content">
                     <div class="stats-grid" style="margin-bottom: 2rem;">
                         <div class="stat-card">
                             <div class="stat-number" id="total-active-subscribers">0</div>
-                            <div class="stat-label">Aktif Abone</div>
+                            <div class="stat-label">Active Subscribers</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number" id="monthly-new-subscribers">0</div>
-                            <div class="stat-label">Bu Ay Yeni</div>
+                            <div class="stat-label">New This Month</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number" id="subscriber-growth">0%</div>
-                            <div class="stat-label">Aylık Büyüme</div>
+                            <div class="stat-label">Monthly Growth</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number" id="last-signup">-</div>
-                            <div class="stat-label">Son Kayıt</div>
+                            <div class="stat-label">Last Signup</div>
                         </div>
                     </div>
 
-                    <div class="table-container">
-                        <div class="table-header">
-                            <h3>Abone Listesi</h3>
-                            <div class="table-actions">
-                                <button class="btn btn-secondary" onclick="admin.exportSubscribers()">
-                                    <i class="fas fa-download"></i> Dışa Aktar
-                                </button>
-                                <button class="btn btn-primary" onclick="admin.refreshSubscribers()">
-                                    <i class="fas fa-refresh"></i> Yenile
-                                </button>
+                                            <div class="table-container">
+                            <div class="table-header">
+                                <h3>Subscriber List</h3>
+                                <div class="table-actions">
+                                    <button class="btn btn-secondary" onclick="admin.exportSubscribers()">
+                                        <i class="fas fa-download"></i> Export
+                                    </button>
+                                    <button class="btn btn-primary" onclick="admin.refreshSubscribers()">
+                                        <i class="fas fa-refresh"></i> Refresh
+                                    </button>
+                                </div>
                             </div>
-                        </div>
                         
-                        <div class="search-filters" style="margin-bottom: 1rem;">
-                            <input type="text" class="search-input" placeholder="Email ara..." id="search-subscribers">
-                            <select class="filter-select" id="filter-subscriber-status">
-                                <option value="">Tüm Durumlar</option>
-                                <option value="active">Aktif</option>
-                                <option value="inactive">Pasif</option>
-                            </select>
-                        </div>
+                                                    <div class="search-filters" style="margin-bottom: 1rem;">
+                                <input type="text" class="search-input" placeholder="Search email..." id="search-subscribers">
+                                <select class="filter-select" id="filter-subscriber-status">
+                                    <option value="">All Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
 
                         <div id="subscribers-table">
                             <!-- Subscriber list will be populated here -->
@@ -1014,13 +1014,13 @@
             <!-- Email Campaigns Section -->
             <section id="emails-section" class="content-section">
                 <div class="section-header">
-                    <h2 class="section-title">Email Kampanyaları</h2>
-                    <p class="section-subtitle">Newsletter kampanyalarınızı yönetin</p>
+                    <h2 class="section-title">Email Campaigns</h2>
+                    <p class="section-subtitle">Manage your newsletter campaigns</p>
                 </div>
                 <div class="section-content">
                     <p style="text-align: center; color: #666; padding: 3rem;">
                         <i class="fas fa-envelope" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i><br>
-                        Email kampanya yönetimi geliştiriliyor...
+                        Email campaign management is under development...
                     </p>
                 </div>
             </section>
@@ -1028,13 +1028,13 @@
             <!-- Settings Section -->
             <section id="settings-section" class="content-section">
                 <div class="section-header">
-                    <h2 class="section-title">Ayarlar</h2>
-                    <p class="section-subtitle">Admin panel ayarları</p>
+                    <h2 class="section-title">Settings</h2>
+                    <p class="section-subtitle">Admin panel settings</p>
                 </div>
                 <div class="section-content">
                     <p style="text-align: center; color: #666; padding: 3rem;">
                         <i class="fas fa-cog" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i><br>
-                        Ayarlar paneli geliştiriliyor...
+                        Settings panel is under development...
                     </p>
                 </div>
             </section>
@@ -1210,7 +1210,7 @@
                     data: {
                         labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran'],
                         datasets: [{
-                            label: 'Blog Görüntülenme',
+                            label: 'Blog Viewnme',
                             data: [120, 190, 300, 500, 420, 680],
                             borderColor: '#d97706',
                             backgroundColor: 'rgba(217, 119, 6, 0.1)',
@@ -1378,7 +1378,7 @@
                     const clicks = dayEvents.filter(e => e.name === 'blog_post_click').length;
                     
                     last7Days.push({
-                        date: date.toLocaleDateString('tr-TR', { weekday: 'short' }),
+                        date: date.toLocaleDateString('en-US', { weekday: 'short' }),
                         views: views,
                         clicks: clicks
                     });
@@ -1395,14 +1395,14 @@
                         labels: last7Days.map(d => d.date),
                         datasets: [
                             {
-                                label: 'Sayfa Görüntüleme',
+                                label: 'Page Views',
                                 data: last7Days.map(d => d.views),
                                 borderColor: '#d97706',
                                 backgroundColor: 'rgba(217, 119, 6, 0.1)',
                                 tension: 0.4
                             },
                             {
-                                label: 'Blog Tıklamaları',
+                                label: 'Blog Clicks',
                                 data: last7Days.map(d => d.clicks),
                                 borderColor: '#92400e',
                                 backgroundColor: 'rgba(146, 64, 14, 0.1)',
@@ -1448,7 +1448,7 @@
                 window.emailChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Newsletter Kayıt', 'Sosyal Medya', 'Etsy Tıklama', 'Blog Etkileşim'],
+                        labels: ['Newsletter Signup', 'Social Media', 'Etsy Clicks', 'Blog Engagement'],
                         datasets: [{
                             data: [emailData.signups, emailData.socialClicks, emailData.etsyClicks, emailData.blogEngagement],
                             backgroundColor: [
@@ -1492,12 +1492,12 @@
                 // Update page title
                 const titles = {
                     'dashboard': 'Dashboard',
-                    'posts': 'Blog Yazıları',
-                    'new-post': 'Yeni Yazı',
-                    'media': 'Medya Kütüphanesi',
-                    'subscribers': 'Aboneler',
-                    'emails': 'Email Kampanyaları',
-                    'settings': 'Ayarlar'
+                    'posts': 'Blog Posts',
+                    'new-post': 'New Post',
+                    'media': 'Media Library',
+                    'subscribers': 'Subscribers',
+                    'emails': 'Email Campaigns',
+                    'settings': 'Settings'
                 };
                 document.getElementById('page-title').textContent = titles[sectionName] || 'Admin Panel';
 
@@ -1561,7 +1561,7 @@
 
                 // Get last signup date
                 const lastSignup = subscribers.length > 0 ? 
-                    new Date(Math.max(...subscribers.map(s => new Date(s.subscriptionDate)))).toLocaleDateString('tr-TR') : '-';
+                    new Date(Math.max(...subscribers.map(s => new Date(s.subscriptionDate)))).toLocaleDateString('en-US') : '-';
 
                 return {
                     total: subscribers.filter(s => s.status === 'active').length,
@@ -1578,7 +1578,7 @@
                     tableContainer.innerHTML = `
                         <div style="text-align: center; padding: 3rem; color: #666;">
                             <i class="fas fa-users" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i>
-                            <p>Henüz abone yok. Newsletter formu ile ilk abonelerinizi toplayın!</p>
+                            <p>No subscribers yet. Start collecting your first subscribers with the newsletter form!</p>
                         </div>
                     `;
                     return;
@@ -1590,20 +1590,20 @@
                             <thead>
                                 <tr>
                                     <th>Email</th>
-                                    <th>Kayıt Tarihi</th>
-                                    <th>Kaynak</th>
-                                    <th>Durum</th>
-                                    <th>İşlemler</th>
+                                    <th>Registration Date</th>
+                                    <th>Source</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                 `;
 
                 subscribers.forEach(subscriber => {
-                    const date = new Date(subscriber.subscriptionDate).toLocaleDateString('tr-TR');
+                    const date = new Date(subscriber.subscriptionDate).toLocaleDateString('en-US');
                     const statusBadge = subscriber.status === 'active' ? 
-                        '<span class="badge badge-success">Aktif</span>' : 
-                        '<span class="badge badge-warning">Pasif</span>';
+                        '<span class="badge badge-success">Active</span>' : 
+                        '<span class="badge badge-warning">Inactive</span>';
 
                     tableHTML += `
                         <tr>
@@ -1613,10 +1613,10 @@
                             <td>${statusBadge}</td>
                             <td>
                                 <button class="btn btn-sm btn-secondary" onclick="admin.toggleSubscriberStatus('${subscriber.id}')">
-                                    ${subscriber.status === 'active' ? 'Pasifleştir' : 'Aktifleştir'}
+                                    ${subscriber.status === 'active' ? 'Deactivate' : 'Activate'}
                                 </button>
                                 <button class="btn btn-sm btn-danger" onclick="admin.removeSubscriber('${subscriber.id}')">
-                                    Sil
+                                    Delete
                                 </button>
                             </td>
                         </tr>
@@ -1640,33 +1640,33 @@
                     subscriber.status = subscriber.status === 'active' ? 'inactive' : 'active';
                     localStorage.setItem('suma_newsletter_subscribers', JSON.stringify(subscribers));
                     this.loadSubscribersData();
-                    this.showNotification(`Abone durumu güncellendi!`, 'success');
+                    this.showNotification(`Subscriber status updated!`, 'success');
                 }
             }
 
             removeSubscriber(subscriberId) {
-                if (!confirm('Bu aboneyi silmek istediğinizden emin misiniz?')) return;
+                if (!confirm('Are you sure you want to delete this subscriber?')) return;
 
                 let subscribers = this.getSubscribers();
                 subscribers = subscribers.filter(s => s.id != subscriberId);
                 localStorage.setItem('suma_newsletter_subscribers', JSON.stringify(subscribers));
                 this.loadSubscribersData();
                 this.updateDashboardStats();
-                this.showNotification('Abone silindi!', 'success');
+                this.showNotification('Subscriber deleted!', 'success');
             }
 
             exportSubscribers() {
                 const subscribers = this.getSubscribers();
                 if (subscribers.length === 0) {
-                    this.showNotification('Dışa aktarılacak abone yok!', 'warning');
+                    this.showNotification('No subscribers to export!', 'warning');
                     return;
                 }
 
                 const csvContent = [
-                    ['Email', 'Kayıt Tarihi', 'Durum', 'Kaynak'],
+                    ['Email', 'Registration Date', 'Status', 'Source'],
                     ...subscribers.map(sub => [
                         sub.email,
-                        new Date(sub.subscriptionDate).toLocaleDateString('tr-TR'),
+                        new Date(sub.subscriptionDate).toLocaleDateString('en-US'),
                         sub.status,
                         sub.source || 'Website'
                     ])
@@ -1680,12 +1680,12 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
 
-                this.showNotification('Abone listesi dışa aktarıldı!', 'success');
+                this.showNotification('Subscriber list exported!', 'success');
             }
 
             refreshSubscribers() {
                 this.loadSubscribersData();
-                this.showNotification('Abone listesi yenilendi!', 'success');
+                this.showNotification('Subscriber list refreshed!', 'success');
             }
 
             displayPosts() {
@@ -1696,9 +1696,9 @@
                     postsContainer.innerHTML = `
                         <div style="text-align: center; padding: 3rem; color: #666;">
                             <i class="fas fa-edit" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i>
-                            <p>Henüz blog yazısı yok. İlk yazınızı oluşturun!</p>
+                            <p>No blog posts yet. Create your first post!</p>
                             <button class="btn btn-primary" style="margin-top: 1rem;" onclick="admin.showSection('new-post')">
-                                <i class="fas fa-plus"></i> Yeni Yazı Oluştur
+                                <i class="fas fa-plus"></i> Create New Post
                             </button>
                         </div>
                     `;
@@ -1716,7 +1716,7 @@
                                         ${post.category}
                                     </span>
                                     <span style="margin-left: 1rem; color: #666;">
-                                        ${new Date(post.date).toLocaleDateString('tr-TR')}
+                                        ${new Date(post.date).toLocaleDateString('en-US')}
                                     </span>
                                 </div>
                                 <h3 class="post-title">${post.title}</h3>
@@ -1725,16 +1725,16 @@
                         </div>
                         <div class="post-actions">
                             <button class="btn btn-primary" onclick="admin.editPost('${post.id}')">
-                                <i class="fas fa-edit"></i> Düzenle
+                                <i class="fas fa-edit"></i> Edit
                             </button>
                             <button class="btn btn-secondary" onclick="admin.viewPost('${post.id}')">
-                                <i class="fas fa-eye"></i> Görüntüle
+                                <i class="fas fa-eye"></i> View
                             </button>
                             <button class="btn btn-success" onclick="admin.sendNewsletterForPost('${post.id}')">
-                                <i class="fas fa-paper-plane"></i> Newsletter Gönder
+                                <i class="fas fa-paper-plane"></i> Send Newsletter
                             </button>
                             <button class="btn btn-danger" onclick="admin.deletePost('${post.id}')">
-                                <i class="fas fa-trash"></i> Sil
+                                <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
                     `;
@@ -1765,7 +1765,7 @@
                     postsContainer.innerHTML = `
                         <div style="text-align: center; padding: 3rem; color: #666;">
                             <i class="fas fa-search" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i>
-                            <p>Arama kriterlerinize uygun yazı bulunamadı.</p>
+                            <p>No posts found matching your search criteria.</p>
                         </div>
                     `;
                     return;
@@ -1782,7 +1782,7 @@
                                         ${post.category}
                                     </span>
                                     <span style="margin-left: 1rem; color: #666;">
-                                        ${new Date(post.date).toLocaleDateString('tr-TR')}
+                                        ${new Date(post.date).toLocaleDateString('en-US')}
                                     </span>
                                 </div>
                                 <h3 class="post-title">${post.title}</h3>
@@ -1791,16 +1791,16 @@
                         </div>
                         <div class="post-actions">
                             <button class="btn btn-primary" onclick="admin.editPost('${post.id}')">
-                                <i class="fas fa-edit"></i> Düzenle
+                                <i class="fas fa-edit"></i> Edit
                             </button>
                             <button class="btn btn-secondary" onclick="admin.viewPost('${post.id}')">
-                                <i class="fas fa-eye"></i> Görüntüle
+                                <i class="fas fa-eye"></i> View
                             </button>
                             <button class="btn btn-success" onclick="admin.sendNewsletterForPost('${post.id}')">
-                                <i class="fas fa-paper-plane"></i> Newsletter Gönder
+                                <i class="fas fa-paper-plane"></i> Send Newsletter
                             </button>
                             <button class="btn btn-danger" onclick="admin.deletePost('${post.id}')">
-                                <i class="fas fa-trash"></i> Sil
+                                <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
                     `;
@@ -1859,10 +1859,10 @@
                 const existingIndex = this.blogData.posts.findIndex(p => p.id === postData.id);
                 if (existingIndex !== -1) {
                     this.blogData.posts[existingIndex] = postData;
-                    this.showNotification('Blog yazısı güncellendi!', 'success');
+                    this.showNotification('Blog post updated!', 'success');
                 } else {
                     this.blogData.posts.unshift(postData);
-                    this.showNotification('Blog yazısı oluşturuldu!', 'success');
+                    this.showNotification('Blog post created!', 'success');
                 }
 
                 // Reset form
@@ -1923,7 +1923,7 @@
                         <h1>${post.title}</h1>
                         <div class="meta">
                             <strong>Kategori:</strong> ${post.category} | 
-                            <strong>Tarih:</strong> ${new Date(post.date).toLocaleDateString('tr-TR')}
+                            <strong>Tarih:</strong> ${new Date(post.date).toLocaleDateString('en-US')}
                         </div>
                         <div>${post.content}</div>
                     </body>
@@ -1932,22 +1932,22 @@
             }
 
             deletePost(postId) {
-                if (!confirm('Bu blog yazısını silmek istediğinizden emin misiniz?')) return;
+                if (!confirm('Are you sure you want to delete this blog post?')) return;
 
                 this.blogData.posts = this.blogData.posts.filter(p => p.id !== postId);
                 this.displayPosts();
                 this.updateDashboardStats();
                 this.downloadBlogData();
-                this.showNotification('Blog yazısı silindi!', 'success');
+                this.showNotification('Blog post deleted!', 'success');
             }
 
             sendNewsletterForPost(postId) {
                 const post = this.blogData.posts.find(p => p.id === postId);
                 if (!post) return;
 
-                if (confirm(`"${post.title}" yazısı için newsletter göndermek istediğinizden emin misiniz?`)) {
+                if (confirm(`"${post.title}" post for newsletter for newsletter?`)) {
                     // Simulate newsletter sending
-                    this.showNotification('Newsletter gönderimi başladı...', 'warning');
+                    this.showNotification('Newsletter sending started...', 'warning');
                     
                     setTimeout(() => {
                         this.showNotification('Newsletter başarıyla gönderildi!', 'success');

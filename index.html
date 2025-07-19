@@ -1016,13 +1016,13 @@
                 
                 // Validate email
                 if (!this.isValidEmail(email)) {
-                    this.showMessage('error', 'Lütfen geçerli bir email adresi girin.');
+                    this.showMessage('error', 'Please enter a valid email address.');
                     return;
                 }
 
                 // Check if already subscribed
                 if (this.subscribers.find(sub => sub.email === email)) {
-                    this.showMessage('error', 'Bu email adresi zaten abone listesinde.');
+                    this.showMessage('error', 'This email address is already subscribed.');
                     return;
                 }
                 
@@ -1031,7 +1031,7 @@
                 errorMsg.style.display = 'none';
                 
                 // Show loading
-                submitBtn.innerHTML = '<span class="loading"></span> Abone oluyor...';
+                submitBtn.innerHTML = '<span class="loading"></span> Subscribing...';
                 submitBtn.disabled = true;
                 
                 try {
@@ -1061,7 +1061,7 @@
                     await new Promise(resolve => setTimeout(resolve, 800));
                     
                     // Show success message
-                    this.showMessage('success', 'Başarıyla abone oldunuz! Hoş geldiniz.');
+                    this.showMessage('success', 'Successfully subscribed! Welcome to our newsletter.');
                     document.getElementById('email-input').value = '';
 
                     // Update admin panel subscriber count if accessible
@@ -1069,10 +1069,10 @@
                     
                 } catch (error) {
                     console.error('Subscription error:', error);
-                    this.showMessage('error', 'Bir hata oluştu. Lütfen tekrar deneyin.');
+                    this.showMessage('error', 'An error occurred. Please try again.');
                 } finally {
                     // Reset button
-                    submitBtn.innerHTML = 'Abone Ol';
+                    submitBtn.innerHTML = 'Subscribe';
                     submitBtn.disabled = false;
                 }
             }
