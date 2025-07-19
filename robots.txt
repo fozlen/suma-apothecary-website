@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Block admin panel from search engines
+Disallow: /admin/
+Disallow: /admin.html
+Disallow: /*.json$
+
+# Block sensitive files
+Disallow: /.htaccess
+Disallow: /.env
+Disallow: /config/
+
+Sitemap: https://sumaapothecary.com/sitemap.xml 
