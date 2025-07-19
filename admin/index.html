@@ -1292,7 +1292,12 @@
                             <i class="fas fa-plus"></i> New Post
                         </button>
                     </div>
-                    <div id="posts-list"></div>
+                    <div id="posts-list">
+                        <div style="text-align: center; padding: 2rem; color: #666;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem; color: #d97706;"></i>
+                            <p>Loading blog posts...</p>
+                        </div>
+                    </div>
                     <div class="pagination" id="posts-pagination"></div>
                 </div>
             </section>
@@ -1924,19 +1929,51 @@
             }
 
             async loadBlogData() {
+                console.log('🔄 Starting to load blog data...');
+                console.log('📍 Current URL:', window.location.href);
+                console.log('📁 Trying to fetch: ../blog-data.json');
+                
                 try {
                     const response = await fetch('../blog-data.json');
+                    console.log('📡 Response status:', response.status, response.statusText);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
                     this.blogData = await response.json();
-                    console.log('✅ Blog data loaded:', this.blogData.posts.length, 'posts');
+                    console.log('✅ Blog data loaded successfully!');
+                    console.log('📊 Posts found:', this.blogData.posts.length);
+                    console.log('📋 Post titles:', this.blogData.posts.map(p => p.title));
                 } catch (error) {
                     console.error('❌ Blog data loading error:', error);
-                    this.blogData = { posts: [] };
+                    console.error('❌ Error details:', error.message);
+                    console.log('🔄 Trying alternative path: ./blog-data.json');
+                    
+                    try {
+                        const response2 = await fetch('./blog-data.json');
+                        console.log('📡 Alternative response status:', response2.status);
+                        if (response2.ok) {
+                            this.blogData = await response2.json();
+                            console.log('✅ Blog data loaded from alternative path!');
+                            console.log('📊 Posts found:', this.blogData.posts.length);
+                        } else {
+                            throw new Error('Alternative path also failed');
+                        }
+                    } catch (error2) {
+                        console.error('❌ Alternative path also failed:', error2);
+                        this.blogData = { posts: [] };
+                    }
                 }
                 
                 // Update UI after data is loaded
+                console.log('🔄 Updating dashboard stats...');
                 this.updateDashboardStats();
                 if (this.currentUser) {
+                    console.log('👤 User logged in, displaying posts...');
                     this.displayPosts();
+                } else {
+                    console.log('👤 No user logged in yet');
                 }
             }
 
@@ -2831,10 +2868,23 @@
             }
 
             displayPosts() {
+                console.log('🎯 displayPosts() called');
+                console.log('📊 blogData.posts.length:', this.blogData.posts.length);
+                console.log('🎯 Looking for element: posts-list');
+                
                 const postsContainer = document.getElementById('posts-list');
+                console.log('📦 Posts container found:', !!postsContainer);
+                
+                if (!postsContainer) {
+                    console.error('❌ Posts container not found! Element #posts-list does not exist.');
+                    return;
+                }
+                
                 postsContainer.innerHTML = '';
+                console.log('🧹 Container cleared');
 
                 if (this.blogData.posts.length === 0) {
+                    console.log('⚠️ No posts to display - showing empty state');
                     postsContainer.innerHTML = `
                         <div style="text-align: center; padding: 3rem; color: #666;">
                             <i class="fas fa-edit" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i>
@@ -2847,7 +2897,10 @@
                     return;
                 }
 
-                this.blogData.posts.forEach(post => {
+                console.log('🔄 Creating post cards for', this.blogData.posts.length, 'posts');
+                
+                this.blogData.posts.forEach((post, index) => {
+                    console.log(`📝 Creating card ${index + 1}:`, post.title);
                     const postCard = document.createElement('div');
                     postCard.className = 'post-card';
                     
@@ -2911,7 +2964,10 @@
                         </div>
                     `;
                     postsContainer.appendChild(postCard);
+                    console.log(`✅ Post card ${index + 1} added to container`);
                 });
+                
+                console.log('🎉 All post cards created and added to DOM!');
             }
 
             filterPosts() {
