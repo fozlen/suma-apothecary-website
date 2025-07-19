@@ -359,7 +359,8 @@
             display: flex;
             gap: 1rem;
             margin-top: 1rem;
-            justify-content: center;
+            justify-content: flex-start;
+            align-items: center;
         }
 
         .social-links a {
@@ -592,15 +593,15 @@
                     <span>Suma Apothecary</span>
                 </a>
                 <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="showBlog()">
+                        📖 Blog
+                    </button>
                     <a href="https://www.etsy.com/shop/SumaApothecary" target="_blank" class="btn btn-primary">
                         🛍️ Shop Now
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                         </svg>
                     </a>
-                    <button class="btn btn-secondary" onclick="showBlog()">
-                        📖 Blog
-                    </button>
                 </div>
             </div>
         </div>
@@ -623,15 +624,15 @@
                         Each piece is created with love and intention in our Turkish atelier to enhance your wellness journey and create sacred spaces for healing.
                     </p>
                     <div class="hero-buttons">
+                        <button class="btn btn-secondary" onclick="showBlog()">
+                            📖 Wellness Blog
+                        </button>
                         <a href="https://www.etsy.com/shop/SumaApothecary" target="_blank" class="btn btn-primary">
                             🛍️ Explore Our Collection
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                             </svg>
                         </a>
-                        <button class="btn btn-secondary" onclick="showBlog()">
-                            📖 Wellness Blog
-                        </button>
                     </div>
                 </div>
             </section>
@@ -770,9 +771,7 @@
                             </svg>
                         </a>
                         <a href="https://www.etsy.com/shop/SumaApothecary" target="_blank" aria-label="Visit our Etsy shop">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <text x="12" y="16" text-anchor="middle" font-size="16" font-weight="bold">E</text>
-                            </svg>
+                            <img src="Etsy-Logo-Online-Marketplace-Icon-transparent.webp" alt="Etsy" width="24" height="24" style="filter: brightness(0) invert(1);">
                         </a>
                     </div>
                 </div>
@@ -850,6 +849,60 @@
                 }
             });
         });
+
+        // Reset blog section to original content
+        function resetBlogSection() {
+            const blogSection = document.getElementById('blog-section');
+            blogSection.innerHTML = `
+                <div class="container">
+                    <button class="btn btn-secondary" onclick="showHome()" style="margin-bottom: 2rem;">← Back to Home</button>
+                    
+                    <h2>Wellness Blog</h2>
+                    <p class="blog-intro">
+                        Discover ancient wisdom and modern wellness practices. From chakra guides to aromatherapy tips, 
+                        explore our collection of articles designed to support your healing journey.
+                    </p>
+                    
+                    <div class="blog-posts">
+                        <article class="blog-post" onclick="showBlogDetail('chakra')">
+                            <div class="blog-post-image">Chakra Guide</div>
+                            <div class="blog-post-content">
+                                <span class="blog-post-category">Chakra Guide</span>
+                                <h3>Understanding the Seven Chakras: A Complete Guide</h3>
+                                <p>Discover the ancient wisdom of chakras and how they influence your physical, emotional, and spiritual well-being.</p>
+                                <div class="blog-post-meta">
+                                    <button class="read-more-btn" onclick="event.stopPropagation(); showBlogDetail('chakra')">Read More →</button>
+                                </div>
+                            </div>
+                        </article>
+                        
+                        <article class="blog-post" onclick="showBlogDetail('aromatherapy')">
+                            <div class="blog-post-image">Aromatherapy</div>
+                            <div class="blog-post-content">
+                                <span class="blog-post-category">Aromatherapy</span>
+                                <h3>Aromatherapy for Beginners: Essential Oils Guide</h3>
+                                <p>Start your aromatherapy journey with this comprehensive guide to essential oils and their healing properties.</p>
+                                <div class="blog-post-meta">
+                                    <button class="read-more-btn" onclick="event.stopPropagation(); showBlogDetail('aromatherapy')">Read More →</button>
+                                </div>
+                            </div>
+                        </article>
+                        
+                        <article class="blog-post" onclick="showBlogDetail('product-care')">
+                            <div class="blog-post-image">Product Care</div>
+                            <div class="blog-post-content">
+                                <span class="blog-post-category">Product Care</span>
+                                <h3>How to Care for Your Ceramic Diffuser</h3>
+                                <p>Keep your handcrafted ceramic diffuser in perfect condition with these simple care and maintenance tips.</p>
+                                <div class="blog-post-meta">
+                                    <button class="read-more-btn" onclick="event.stopPropagation(); showBlogDetail('product-care')">Read More →</button>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            `;
+        }
 
         // Blog detail functions
         function showBlogDetail(type) {
@@ -931,7 +984,7 @@
                 const blogSection = document.getElementById('blog-section');
                 blogSection.innerHTML = `
                     <div class="container">
-                        <button class="btn btn-secondary" onclick="showBlog()" style="margin-bottom: 2rem;">← Back to Blog</button>
+                        <button class="btn btn-secondary" onclick="resetBlogSection()" style="margin-bottom: 2rem;">← Back to Blog</button>
                         <div class="blog-detail">
                             <h2>${detail.title}</h2>
                             <div class="blog-content">
