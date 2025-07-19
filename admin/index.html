@@ -230,6 +230,17 @@
             padding: 2rem;
             background: linear-gradient(135deg, #fef7ed, #fed7aa);
             border-bottom: 1px solid #fed7aa;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .section-header-left {
+            flex: 1;
+        }
+        
+        .section-header-right {
+            margin-left: 20px;
         }
 
         .section-title {
@@ -1323,8 +1334,15 @@
             <!-- New Post Section -->
             <section id="new-post-section" class="content-section">
                 <div class="section-header">
-                    <h2 class="section-title">New Blog Post</h2>
-                    <p class="section-subtitle">Create a new blog post</p>
+                    <div class="section-header-left">
+                        <h2 id="post-form-title" class="section-title">New Blog Post</h2>
+                        <p id="post-form-subtitle" class="section-subtitle">Create a new blog post</p>
+                    </div>
+                    <div class="section-header-right">
+                        <button type="button" id="back-to-posts-btn" class="btn-secondary" style="display: none;">
+                            ← Back to Posts
+                        </button>
+                    </div>
                 </div>
                 <div class="section-content">
                     <form id="post-form">
@@ -3412,8 +3430,9 @@
                     `;
                 }
 
-                // Switch to new post tab
+                // Switch to new post tab and set edit mode
                 this.showSection('new-post');
+                this.setEditMode(true, post.title);
 
                 // Log detailed edit info for debugging
                 console.log('📋 EDIT FORM POPULATED WITH:', {
@@ -3430,6 +3449,70 @@
                 setTimeout(() => {
                     this.showNotification('✅ Post loaded for editing! All fields populated.', 'success');
                 }, 500);
+            }
+
+            // Set edit mode UI
+            setEditMode(isEditMode, postTitle = '') {
+                const formTitle = document.getElementById('post-form-title');
+                const formSubtitle = document.getElementById('post-form-subtitle');
+                const backBtn = document.getElementById('back-to-posts-btn');
+                
+                if (isEditMode) {
+                    if (formTitle) formTitle.textContent = `✏️ Edit Post: ${postTitle}`;
+                    if (formSubtitle) formSubtitle.textContent = 'Update your existing blog post';
+                    if (backBtn) {
+                        backBtn.style.display = 'inline-block';
+                        backBtn.onclick = () => {
+                            this.setEditMode(false);
+                            this.showSection('posts');
+                            this.clearForm();
+                        };
+                    }
+                    
+                    // Update submit button
+                    const submitBtn = document.querySelector('#post-form .btn-primary');
+                    if (submitBtn) {
+                        submitBtn.textContent = '💾 Update Post';
+                        submitBtn.style.background = '#059669'; // Green for update
+                    }
+                } else {
+                    if (formTitle) formTitle.textContent = 'New Blog Post';
+                    if (formSubtitle) formSubtitle.textContent = 'Create a new blog post';
+                    if (backBtn) backBtn.style.display = 'none';
+                    
+                    // Reset submit button
+                    const submitBtn = document.querySelector('#post-form .btn-primary');
+                    if (submitBtn) {
+                        submitBtn.textContent = '📝 Publish Post';
+                        submitBtn.style.background = '#ea580c'; // Orange for new
+                    }
+                }
+                
+                console.log(`🎯 Edit mode set to: ${isEditMode ? 'EDIT' : 'NEW'}`);
+            }
+
+            // Clear form for new post
+            clearForm() {
+                const form = document.getElementById('post-form');
+                if (form) form.reset();
+                
+                // Reset hidden ID
+                const postIdEl = document.getElementById('post-id');
+                if (postIdEl) postIdEl.value = '';
+                
+                // Clear Quill editor
+                if (this.quillEditor) {
+                    this.quillEditor.setContents([]);
+                }
+                
+                // Clear image previews
+                const featuredPreview = document.getElementById('featured-image-preview');
+                if (featuredPreview) featuredPreview.innerHTML = '';
+                
+                const galleryPreview = document.getElementById('gallery-preview');
+                if (galleryPreview) galleryPreview.innerHTML = '';
+                
+                console.log('🧹 Form cleared for new post');
             }
 
             viewPost(postId) {
