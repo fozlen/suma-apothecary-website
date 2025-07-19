@@ -423,17 +423,31 @@
 
         /* Blog Post List */
         .post-card {
-            background: #fef7ed;
+            background: white;
             padding: 2rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             border-radius: 15px;
-            border-left: 4px solid #d97706;
+            border-left: 5px solid #d97706;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .post-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            border-left-color: #ea580c;
+        }
+
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #d97706, #ea580c);
+            border-radius: 15px 15px 0 0;
         }
 
         .post-card-header {
@@ -463,8 +477,23 @@
 
         .post-actions {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             flex-wrap: wrap;
+            padding-top: 1rem;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .post-actions .btn {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .post-actions .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         /* Email Management */
@@ -1071,7 +1100,7 @@
                     </button>
                     <span>Admin</span>
                     <button class="logout-btn" id="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i> Çıkış
+                        <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </div>
             </div>
@@ -1599,7 +1628,7 @@
                 localStorage.removeItem('suma-admin-auth');
                 this.currentUser = null;
                 this.showLoginScreen();
-                this.showNotification('Çıkış yapıldı', 'success');
+                this.showNotification('Logged out successfully', 'success');
             }
 
             showLoginScreen() {
@@ -2384,6 +2413,36 @@
                 }
             }
 
+            updateExcerptCounter() {
+                const excerptInput = document.getElementById('post-excerpt');
+                const excerptCount = document.getElementById('excerpt-count');
+                
+                if (excerptInput && excerptCount) {
+                    const length = excerptInput.value.length;
+                    excerptCount.textContent = length;
+                    
+                    // Update color based on length
+                    if (length < 120) {
+                        excerptCount.style.color = '#ef4444'; // Red - too short
+                    } else if (length <= 160) {
+                        excerptCount.style.color = '#10b981'; // Green - perfect
+                    } else {
+                        excerptCount.style.color = '#f59e0b'; // Orange - too long
+                    }
+                }
+            }
+
+            calculateReadingTime(content) {
+                if (!content) return 1;
+                
+                // Strip HTML tags and count words
+                const text = content.replace(/<[^>]*>/g, '');
+                const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+                const readingTime = Math.ceil(words / 200); // 200 words per minute average
+                
+                return Math.max(1, readingTime); // Minimum 1 minute
+            }
+
             setupImageUpload() {
                 // Featured image upload
                 const featuredImageInput = document.getElementById('post-featured-image');
@@ -2843,22 +2902,113 @@
 
             editPost(postId) {
                 const post = this.blogData.posts.find(p => p.id === postId);
-                if (!post) return;
+                if (!post) {
+                    this.showNotification('Post not found!', 'error');
+                    return;
+                }
 
-                // Fill form with post data
-                document.getElementById('post-id').value = post.id;
-                document.getElementById('post-category').value = post.category;
-                document.getElementById('post-title').value = post.title;
-                document.getElementById('post-excerpt').value = post.excerpt;
-                document.getElementById('excerpt-count').textContent = post.excerpt.length;
+                // Show edit notification with detailed info
+                this.showNotification(`📝 Editing Post: "${post.title}"`, 'info');
+                console.log('🔧 EDIT POST - Detailed Info:', {
+                    postId: postId,
+                    postData: post,
+                    editMode: 'ON',
+                    fieldsToFill: [
+                        'Basic Info', 'SEO & Categorization', 
+                        'Content', 'Advanced Settings'
+                    ]
+                });
 
-                // Set content in editor
+                // === 📝 BASIC INFORMATION ===
+                document.getElementById('post-id').value = post.id || '';
+                document.getElementById('post-title').value = post.title || '';
+                document.getElementById('post-slug').value = post.slug || this.generateSlug(post.title);
+                document.getElementById('post-excerpt').value = post.excerpt || '';
+                
+                // Update excerpt counter
+                this.updateExcerptCounter();
+                
+                // === 🎯 SEO & CATEGORIZATION ===
+                document.getElementById('post-category').value = post.category || 'Wellness Tips';
+                document.getElementById('post-tags').value = post.tags ? post.tags.join(', ') : '';
+                document.getElementById('post-keywords').value = post.keywords ? post.keywords.join(', ') : '';
+                document.getElementById('post-reading-time').value = post.readingTime || this.calculateReadingTime(post.content);
+
+                // === 🖼️ MEDIA & IMAGES ===
+                // Handle featured image
+                if (post.featuredImage) {
+                    const preview = document.getElementById('featured-image-preview');
+                    preview.innerHTML = `
+                        <div class="image-preview-item">
+                            <img src="${post.featuredImage}" alt="Featured Image" style="max-width: 200px; border-radius: 8px;">
+                            <small>Current featured image</small>
+                        </div>
+                    `;
+                }
+                document.getElementById('post-image-alt').value = post.imageAlt || '';
+
+                // Handle gallery images
+                if (post.gallery && post.gallery.length > 0) {
+                    const galleryPreview = document.getElementById('gallery-preview');
+                    galleryPreview.innerHTML = post.gallery.map(img => `
+                        <div class="gallery-item">
+                            <img src="${img}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+                        </div>
+                    `).join('');
+                }
+
+                // === ✍️ CONTENT ===
                 if (this.quillEditor) {
-                    this.quillEditor.root.innerHTML = post.content;
+                    this.quillEditor.root.innerHTML = post.content || '';
+                    this.updateContentStats();
+                }
+
+                // === 🚀 ADVANCED SEO & SOCIAL ===
+                document.getElementById('post-meta-title').value = post.metaTitle || '';
+                document.getElementById('post-content-type').value = post.contentType || 'Article';
+                document.getElementById('post-status').value = post.status || 'published';
+                document.getElementById('post-canonical-url').value = post.canonicalUrl || '';
+
+                // === 📱 SEO PREVIEW UPDATE ===
+                this.updateSEOPreview();
+
+                // === 🎛️ UI STATE MANAGEMENT ===
+                // Change button text to indicate edit mode
+                const publishBtn = document.querySelector('.btn-success[onclick="admin.savePost()"]');
+                if (publishBtn) {
+                    publishBtn.innerHTML = '<i class="fas fa-save"></i> Update Post';
+                    publishBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                }
+
+                // Add edit mode indicator
+                const formTitle = document.querySelector('.section-title');
+                if (formTitle) {
+                    formTitle.innerHTML = `
+                        <i class="fas fa-edit"></i> Edit Post: "${post.title}"
+                        <span style="background: #10b981; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; margin-left: 1rem;">
+                            EDIT MODE
+                        </span>
+                    `;
                 }
 
                 // Switch to new post tab
                 this.showSection('new-post');
+
+                // Log detailed edit info for debugging
+                console.log('📋 EDIT FORM POPULATED WITH:', {
+                    title: post.title,
+                    category: post.category,
+                    tags: post.tags,
+                    contentLength: post.content ? post.content.length : 0,
+                    hasImage: !!post.featuredImage,
+                    status: post.status,
+                    editTimestamp: new Date().toISOString()
+                });
+
+                // Show success message
+                setTimeout(() => {
+                    this.showNotification('✅ Post loaded for editing! All fields populated.', 'success');
+                }, 500);
             }
 
             viewPost(postId) {
