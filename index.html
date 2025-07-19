@@ -36,10 +36,45 @@
 
             init() {
                 this.trackPageView();
+                this.trackBlogDetailView();
                 this.setupScrollTracking();
                 this.setupClickTracking();
                 this.setupFormTracking();
                 this.setupTimeTracking();
+            }
+
+            trackBlogDetailView() {
+                const path = window.location.pathname.toLowerCase();
+                const urlParams = new URLSearchParams(window.location.search);
+                
+                // Check if this is a blog detail page
+                if (path.includes('blog') && (urlParams.has('post') || urlParams.has('article') || path.split('/').length > 2)) {
+                    const postTitle = document.title;
+                    const postId = urlParams.get('post') || urlParams.get('id') || path.split('/').pop() || 'unknown';
+                    
+                    console.log('📖 Blog detail page detected:', postTitle);
+                    
+                    this.trackEvent('blog_detail_view', {
+                        postId: postId,
+                        postTitle: postTitle,
+                        url: window.location.href,
+                        referrer: document.referrer,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+                
+                // Also track if URL hash indicates a blog post
+                if (window.location.hash && window.location.hash.includes('blog')) {
+                    console.log('📖 Blog hash navigation detected:', window.location.hash);
+                    
+                    this.trackEvent('blog_detail_view', {
+                        postId: window.location.hash.replace('#', ''),
+                        postTitle: document.title,
+                        url: window.location.href,
+                        accessMethod: 'hash_navigation',
+                        timestamp: new Date().toISOString()
+                    });
+                }
             }
 
             generateSessionId() {
@@ -109,7 +144,15 @@
                             platform: element.href?.includes('instagram') ? 'instagram' : 'other' 
                         });
                     } else if (element.matches('button, .btn, [onclick]')) {
-                        this.trackEvent('button_click', elementInfo);
+                        // Filter out back buttons and navigation buttons
+                        const isBackButton = elementInfo.text.toLowerCase().includes('back') || 
+                                           elementInfo.text.toLowerCase().includes('geri') ||
+                                           elementInfo.class.includes('back') ||
+                                           elementInfo.id.includes('back');
+                        
+                        if (!isBackButton) {
+                            this.trackEvent('button_click', elementInfo);
+                        }
                     } else if (element.matches('.blog-post, .blog-item')) {
                         this.trackEvent('blog_post_click', elementInfo);
                     }

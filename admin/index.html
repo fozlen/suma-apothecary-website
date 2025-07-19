@@ -1735,11 +1735,19 @@
                 // Enhanced form functionality
                 this.setupEnhancedPostForm();
 
-                // File upload
-                const imageUpload = getElement('post-image-upload');
-                if (imageUpload) {
-                    imageUpload.addEventListener('change', (e) => {
+                // File upload - Featured Image
+                const featuredImageUpload = getElement('post-featured-image');
+                if (featuredImageUpload) {
+                    featuredImageUpload.addEventListener('change', (e) => {
                         this.handleImageUpload(e);
+                    });
+                }
+
+                // File upload - Gallery
+                const galleryUpload = getElement('post-gallery');
+                if (galleryUpload) {
+                    galleryUpload.addEventListener('change', (e) => {
+                        this.handleGalleryUpload(e);
                     });
                 }
 
@@ -3141,27 +3149,72 @@
 
                 // Validate file
                 if (!file.type.startsWith('image/')) {
-                    this.showNotification('Lütfen geçerli bir görsel dosyası seçin!', 'error');
+                    this.showNotification('Please select a valid image file!', 'error');
                     return;
                 }
 
                 if (file.size > 5 * 1024 * 1024) { // 5MB
-                    this.showNotification('Dosya boyutu 5MB\'dan küçük olmalıdır!', 'error');
+                    this.showNotification('File size must be smaller than 5MB!', 'error');
                     return;
                 }
 
-                // Create preview
+                // Create preview for featured image
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    const preview = document.getElementById('image-preview');
-                    preview.innerHTML = `
-                        <img src="${e.target.result}" alt="Preview">
-                        <p style="margin-top: 1rem; color: #666;">
-                            ${file.name} (${(file.size / 1024).toFixed(1)} KB)
-                        </p>
-                    `;
+                    const preview = document.getElementById('featured-image-preview');
+                    if (preview) {
+                        preview.innerHTML = `
+                            <div class="image-preview-item">
+                                <img src="${e.target.result}" alt="Featured Image Preview" style="max-width: 200px; border-radius: 8px;">
+                                <p style="margin-top: 0.5rem; color: #666; font-size: 0.8rem;">
+                                    ${file.name} (${(file.size / 1024).toFixed(1)} KB)
+                                </p>
+                            </div>
+                        `;
+                    }
                 };
                 reader.readAsDataURL(file);
+            }
+
+            handleGalleryUpload(event) {
+                const files = Array.from(event.target.files);
+                if (files.length === 0) return;
+
+                const preview = document.getElementById('gallery-preview');
+                if (!preview) return;
+
+                preview.innerHTML = ''; // Clear existing previews
+
+                files.forEach((file, index) => {
+                    // Validate each file
+                    if (!file.type.startsWith('image/')) {
+                        this.showNotification(`File ${file.name} is not a valid image!`, 'error');
+                        return;
+                    }
+
+                    if (file.size > 5 * 1024 * 1024) { // 5MB
+                        this.showNotification(`File ${file.name} is too large (max 5MB)!`, 'error');
+                        return;
+                    }
+
+                    // Create preview
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const imageDiv = document.createElement('div');
+                        imageDiv.className = 'gallery-item';
+                        imageDiv.innerHTML = `
+                            <img src="${e.target.result}" alt="Gallery Image ${index + 1}" 
+                                 style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb;">
+                            <button type="button" onclick="this.parentElement.remove()" 
+                                    style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer;">×</button>
+                        `;
+                        imageDiv.style.position = 'relative';
+                        imageDiv.style.display = 'inline-block';
+                        imageDiv.style.margin = '5px';
+                        preview.appendChild(imageDiv);
+                    };
+                    reader.readAsDataURL(file);
+                });
             }
 
             handlePostSubmit() {
@@ -3171,7 +3224,7 @@
                     title: document.getElementById('post-title').value,
                     excerpt: document.getElementById('post-excerpt').value,
                     content: this.quillEditor.root.innerHTML,
-                    image: document.getElementById('post-image-upload').files[0]?.name || 'Default Image',
+                    image: document.getElementById('post-featured-image').files[0]?.name || 'Default Image',
                     date: new Date().toISOString().split('T')[0],
                     author: 'Suma Apothecary'
                 };
@@ -3413,8 +3466,8 @@
             window.admin = new SumaAdmin();
         });
 
-        // Make some functions global for onclick handlers
-        window.admin = admin;
+        // Make admin globally available for onclick handlers
+        // This will be set after admin is created in DOMContentLoaded
     </script>
 </body>
 </html> 
