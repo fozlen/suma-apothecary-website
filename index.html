@@ -24,6 +24,173 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="canonical" href="https://sumaapothecary.com/">
     
+    <!-- Analytics Tracking System -->
+    <script>
+        class SumaAnalytics {
+            constructor() {
+                this.sessionId = this.generateSessionId();
+                this.visitStartTime = Date.now();
+                this.events = [];
+                this.init();
+            }
+
+            init() {
+                this.trackPageView();
+                this.setupScrollTracking();
+                this.setupClickTracking();
+                this.setupFormTracking();
+                this.setupTimeTracking();
+            }
+
+            generateSessionId() {
+                return 'suma_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            trackEvent(eventName, data = {}) {
+                const event = {
+                    id: Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                    name: eventName,
+                    timestamp: new Date().toISOString(),
+                    sessionId: this.sessionId,
+                    url: window.location.href,
+                    userAgent: navigator.userAgent,
+                    viewport: {
+                        width: window.innerWidth,
+                        height: window.innerHeight
+                    },
+                    data: data
+                };
+
+                this.events.push(event);
+                this.saveToStorage();
+                console.log('📊 Analytics Event:', eventName, data);
+            }
+
+            trackPageView() {
+                this.trackEvent('page_view', {
+                    page: window.location.pathname,
+                    referrer: document.referrer,
+                    title: document.title
+                });
+            }
+
+            setupScrollTracking() {
+                let scrollMilestones = [25, 50, 75, 90];
+                let trackedMilestones = new Set();
+
+                window.addEventListener('scroll', () => {
+                    const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+                    
+                    scrollMilestones.forEach(milestone => {
+                        if (scrollPercent >= milestone && !trackedMilestones.has(milestone)) {
+                            trackedMilestones.add(milestone);
+                            this.trackEvent('scroll_depth', { percentage: milestone });
+                        }
+                    });
+                });
+            }
+
+            setupClickTracking() {
+                document.addEventListener('click', (e) => {
+                    const element = e.target;
+                    const elementInfo = {
+                        tag: element.tagName.toLowerCase(),
+                        id: element.id || '',
+                        class: element.className || '',
+                        text: element.textContent?.trim().substring(0, 50) || ''
+                    };
+
+                    // Track specific elements
+                    if (element.matches('a[href*="etsy"]')) {
+                        this.trackEvent('etsy_link_click', elementInfo);
+                    } else if (element.matches('.social-link')) {
+                        this.trackEvent('social_media_click', { 
+                            ...elementInfo, 
+                            platform: element.href?.includes('instagram') ? 'instagram' : 'other' 
+                        });
+                    } else if (element.matches('button, .btn, [onclick]')) {
+                        this.trackEvent('button_click', elementInfo);
+                    } else if (element.matches('.blog-post, .blog-item')) {
+                        this.trackEvent('blog_post_click', elementInfo);
+                    }
+                });
+            }
+
+            setupFormTracking() {
+                document.addEventListener('submit', (e) => {
+                    const form = e.target;
+                    if (form.tagName === 'FORM') {
+                        const formData = new FormData(form);
+                        const formInfo = {
+                            id: form.id || '',
+                            action: form.action || '',
+                            fields: Array.from(formData.keys())
+                        };
+
+                        if (form.querySelector('input[type="email"]')) {
+                            this.trackEvent('newsletter_signup_attempt', formInfo);
+                        } else {
+                            this.trackEvent('form_submission', formInfo);
+                        }
+                    }
+                });
+            }
+
+            setupTimeTracking() {
+                // Track time spent on page
+                setInterval(() => {
+                    const timeSpent = Math.round((Date.now() - this.visitStartTime) / 1000);
+                    if (timeSpent % 30 === 0 && timeSpent > 0) { // Every 30 seconds
+                        this.trackEvent('time_on_page', { seconds: timeSpent });
+                    }
+                }, 1000);
+
+                // Track when user leaves
+                window.addEventListener('beforeunload', () => {
+                    const totalTime = Math.round((Date.now() - this.visitStartTime) / 1000);
+                    this.trackEvent('page_exit', { totalTimeSeconds: totalTime });
+                });
+            }
+
+            saveToStorage() {
+                try {
+                    localStorage.setItem('suma_analytics', JSON.stringify(this.events));
+                } catch (e) {
+                    console.warn('Could not save analytics to localStorage');
+                }
+            }
+
+            getEvents() {
+                return this.events;
+            }
+
+            exportData() {
+                return {
+                    sessionId: this.sessionId,
+                    events: this.events,
+                    summary: this.getSummary()
+                };
+            }
+
+            getSummary() {
+                const eventCounts = {};
+                this.events.forEach(event => {
+                    eventCounts[event.name] = (eventCounts[event.name] || 0) + 1;
+                });
+
+                return {
+                    totalEvents: this.events.length,
+                    sessionDuration: Math.round((Date.now() - this.visitStartTime) / 1000),
+                    eventBreakdown: eventCounts,
+                    lastActivity: this.events[this.events.length - 1]?.timestamp
+                };
+            }
+        }
+
+        // Initialize analytics
+        window.sumaAnalytics = new SumaAnalytics();
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -809,44 +976,194 @@
             window.scrollTo(0, 0);
         }
 
-        // Newsletter Subscription with EmailJS
-        document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email-input').value;
-            const submitBtn = document.getElementById('subscribe-btn');
-            const successMsg = document.getElementById('success-message');
-            const errorMsg = document.getElementById('error-message');
-            
-            // Hide previous messages
-            successMsg.style.display = 'none';
-            errorMsg.style.display = 'none';
-            
-            // Show loading
-            submitBtn.innerHTML = '<span class="loading"></span> Subscribing...';
-            submitBtn.disabled = true;
-            
-            try {
-                // EmailJS integration (will be configured)
-                // For now, simulate success
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                // Show success message
-                successMsg.style.display = 'block';
-                document.getElementById('email-input').value = '';
-                
-                // Track subscription (you can add analytics here)
-                console.log('Newsletter subscription:', email);
-                
-            } catch (error) {
-                console.error('Subscription error:', error);
-                errorMsg.style.display = 'block';
-            } finally {
-                // Reset button
-                submitBtn.innerHTML = 'Subscribe';
-                submitBtn.disabled = false;
+        // Newsletter Subscription System
+        class NewsletterManager {
+            constructor() {
+                this.subscribers = this.loadSubscribers();
+                this.setupEventListeners();
             }
-        });
+
+            setupEventListeners() {
+                document.getElementById('newsletter-form').addEventListener('submit', (e) => {
+                    this.handleSubscription(e);
+                });
+            }
+
+            loadSubscribers() {
+                try {
+                    const stored = localStorage.getItem('suma_newsletter_subscribers');
+                    return stored ? JSON.parse(stored) : [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            saveSubscribers() {
+                try {
+                    localStorage.setItem('suma_newsletter_subscribers', JSON.stringify(this.subscribers));
+                } catch (e) {
+                    console.warn('Could not save subscribers data');
+                }
+            }
+
+            async handleSubscription(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email-input').value.trim();
+                const submitBtn = document.getElementById('subscribe-btn');
+                const successMsg = document.getElementById('success-message');
+                const errorMsg = document.getElementById('error-message');
+                
+                // Validate email
+                if (!this.isValidEmail(email)) {
+                    this.showMessage('error', 'Lütfen geçerli bir email adresi girin.');
+                    return;
+                }
+
+                // Check if already subscribed
+                if (this.subscribers.find(sub => sub.email === email)) {
+                    this.showMessage('error', 'Bu email adresi zaten abone listesinde.');
+                    return;
+                }
+                
+                // Hide previous messages
+                successMsg.style.display = 'none';
+                errorMsg.style.display = 'none';
+                
+                // Show loading
+                submitBtn.innerHTML = '<span class="loading"></span> Abone oluyor...';
+                submitBtn.disabled = true;
+                
+                try {
+                    // Add to local storage
+                    const subscriber = {
+                        id: Date.now(),
+                        email: email,
+                        subscriptionDate: new Date().toISOString(),
+                        status: 'active',
+                        source: 'website',
+                        ipAddress: await this.getClientIP()
+                    };
+
+                    this.subscribers.push(subscriber);
+                    this.saveSubscribers();
+
+                    // Track analytics event
+                    if (window.sumaAnalytics) {
+                        window.sumaAnalytics.trackEvent('newsletter_signup_success', {
+                            email: email,
+                            source: 'landing_page'
+                        });
+                    }
+
+                    // Simulate EmailJS call (replace with real EmailJS when configured)
+                    await this.sendWelcomeEmail(email);
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    
+                    // Show success message
+                    this.showMessage('success', 'Başarıyla abone oldunuz! Hoş geldiniz.');
+                    document.getElementById('email-input').value = '';
+
+                    // Update admin panel subscriber count if accessible
+                    this.updateAdminSubscriberCount();
+                    
+                } catch (error) {
+                    console.error('Subscription error:', error);
+                    this.showMessage('error', 'Bir hata oluştu. Lütfen tekrar deneyin.');
+                } finally {
+                    // Reset button
+                    submitBtn.innerHTML = 'Abone Ol';
+                    submitBtn.disabled = false;
+                }
+            }
+
+            isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            showMessage(type, message) {
+                const successMsg = document.getElementById('success-message');
+                const errorMsg = document.getElementById('error-message');
+
+                if (type === 'success') {
+                    successMsg.textContent = message;
+                    successMsg.style.display = 'block';
+                    errorMsg.style.display = 'none';
+                } else {
+                    errorMsg.textContent = message;
+                    errorMsg.style.display = 'block';
+                    successMsg.style.display = 'none';
+                }
+
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                    errorMsg.style.display = 'none';
+                }, 5000);
+            }
+
+            async getClientIP() {
+                try {
+                    // Using a free IP service (replace with your preferred service)
+                    const response = await fetch('https://api.ipify.org?format=json');
+                    const data = await response.json();
+                    return data.ip;
+                } catch (e) {
+                    return 'unknown';
+                }
+            }
+
+            async sendWelcomeEmail(email) {
+                // This will be replaced with actual EmailJS implementation
+                console.log('Welcome email would be sent to:', email);
+                
+                // Simulate email sending
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.log('Welcome email sent successfully');
+                        resolve();
+                    }, 500);
+                });
+            }
+
+            updateAdminSubscriberCount() {
+                // Update localStorage count for admin panel
+                localStorage.setItem('suma_subscriber_count', this.subscribers.length.toString());
+            }
+
+            getSubscribers() {
+                return this.subscribers;
+            }
+
+            getSubscriberStats() {
+                const today = new Date();
+                const thisMonth = this.subscribers.filter(sub => {
+                    const subDate = new Date(sub.subscriptionDate);
+                    return subDate.getMonth() === today.getMonth() && 
+                           subDate.getFullYear() === today.getFullYear();
+                }).length;
+
+                const lastMonth = this.subscribers.filter(sub => {
+                    const subDate = new Date(sub.subscriptionDate);
+                    const lastMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                    return subDate.getMonth() === lastMonthDate.getMonth() && 
+                           subDate.getFullYear() === lastMonthDate.getFullYear();
+                }).length;
+
+                const growth = lastMonth > 0 ? ((thisMonth - lastMonth) / lastMonth * 100).toFixed(1) : 0;
+
+                return {
+                    total: this.subscribers.length,
+                    thisMonth: thisMonth,
+                    lastMonth: lastMonth,
+                    growth: growth
+                };
+            }
+        }
+
+        // Initialize newsletter manager
+        window.newsletterManager = new NewsletterManager();
 
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
