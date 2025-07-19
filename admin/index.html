@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1103,12 +1103,12 @@
                     </div>
 
                     <div class="chart-container">
-                        <h3 style="margin-bottom: 1rem; color: #92400e;">Blog Post Views Chart</h3>
+                        <h3 style="margin-bottom: 1rem; color: #92400e;">Website Traffic Analytics</h3>
                         <canvas id="blog-chart" width="400" height="200"></canvas>
                     </div>
 
                     <div class="chart-container">
-                        <h3 style="margin-bottom: 1rem; color: #92400e;">Email Campaign Performance</h3>
+                        <h3 style="margin-bottom: 1rem; color: #92400e;">User Engagement Overview</h3>
                         <canvas id="email-chart" width="400" height="200"></canvas>
                     </div>
 
@@ -1641,56 +1641,140 @@
             }
 
             initializeCharts() {
-                // Blog views chart
+                // Get real analytics data
+                const analyticsData = this.getAnalyticsData();
+                const subscriberData = this.getSubscriberData();
+                
+                // Blog views chart with real data
                 const blogCtx = document.getElementById('blog-chart').getContext('2d');
+                const last7Days = this.getLast7DaysData(analyticsData);
+                
                 new Chart(blogCtx, {
                     type: 'line',
                     data: {
-                        labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran'],
+                        labels: last7Days.labels,
                         datasets: [{
-                            label: 'Blog Viewnme',
-                            data: [120, 190, 300, 500, 420, 680],
+                            label: 'Page Views',
+                            data: last7Days.pageViews,
                             borderColor: '#d97706',
                             backgroundColor: 'rgba(217, 119, 6, 0.1)',
-                            tension: 0.4
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: 'Blog Clicks',
+                            data: last7Days.blogClicks,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
                         }]
                     },
                     options: {
                         responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Website Traffic - Last 7 Days'
+                            },
+                            legend: {
+                                display: true
+                            }
+                        },
                         scales: {
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Number of Views'
+                                }
                             }
                         }
                     }
                 });
 
-                // Email performance chart
+                // Email performance chart with real data
                 const emailCtx = document.getElementById('email-chart').getContext('2d');
-                new Chart(emailCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Gönderilen', 'Açılan', 'Tıklanan', 'Abonelikten Çıkan'],
-                        datasets: [{
-                            label: 'Email Metrikleri',
-                            data: [1000, 750, 320, 12],
-                            backgroundColor: [
-                                '#d97706',
-                                '#10b981',
-                                '#3b82f6',
-                                '#ef4444'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true
+                const totalSubscribers = subscriberData.length;
+                const totalEvents = analyticsData.length;
+                const newsletterSignups = analyticsData.filter(event => event.name === 'newsletter_signup_attempt' || event.name === 'newsletter_signup_success').length;
+                const socialMediaClicks = analyticsData.filter(event => event.name === 'social_media_click').length;
+                const etsyClicks = analyticsData.filter(event => event.name === 'etsy_link_click').length;
+                const blogClicks = analyticsData.filter(event => event.name === 'blog_post_click').length;
+                
+                // If no real data, show placeholder
+                if (totalEvents === 0) {
+                    emailCtx.canvas.style.display = 'none';
+                    const chartContainer = emailCtx.canvas.parentElement;
+                    chartContainer.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #666;">
+                            <i class="fas fa-chart-bar" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                            <h4>No engagement data yet</h4>
+                            <p>User interactions will appear here once visitors start engaging with your site.</p>
+                        </div>
+                    `;
+                } else {
+                    new Chart(emailCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Newsletter Signups', 'Social Media Clicks', 'Etsy Store Visits', 'Blog Post Clicks'],
+                            datasets: [{
+                                label: 'User Engagement',
+                                data: [newsletterSignups, socialMediaClicks, etsyClicks, blogClicks],
+                                backgroundColor: [
+                                    '#d97706',
+                                    '#10b981',
+                                    '#3b82f6',
+                                    '#ef4444'
+                                ],
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'User Engagement Distribution'
+                                },
+                                legend: {
+                                    position: 'bottom'
+                                }
                             }
                         }
-                    }
+                    });
+                }
+            }
+
+            getLast7DaysData(analyticsData) {
+                const today = new Date();
+                const last7Days = [];
+                const labels = [];
+                
+                // Generate last 7 days
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+                    last7Days.push(date.toDateString());
+                }
+                
+                // Count events for each day
+                const pageViews = last7Days.map(day => {
+                    return analyticsData.filter(event => 
+                        event.name === 'page_view' && 
+                        new Date(event.timestamp).toDateString() === day
+                    ).length;
                 });
+                
+                const blogClicks = last7Days.map(day => {
+                    return analyticsData.filter(event => 
+                        event.name === 'blog_post_click' && 
+                        new Date(event.timestamp).toDateString() === day
+                    ).length;
+                });
+                
+                return { labels, pageViews, blogClicks };
             }
 
             async loadBlogData() {
@@ -1790,6 +1874,20 @@
                 return 0;
             }
 
+            getSubscriberData() {
+                // Get real subscriber data from localStorage
+                let subscribers = [];
+                try {
+                    const storedSubscribers = localStorage.getItem('suma_subscribers');
+                    if (storedSubscribers) {
+                        subscribers = JSON.parse(storedSubscribers);
+                    }
+                } catch (e) {
+                    console.warn('Could not load subscriber data');
+                }
+                return subscribers;
+            }
+
             incrementSubscriberCount() {
                 const current = this.getStoredSubscriberCount();
                 const newCount = current + 1;
@@ -1846,7 +1944,7 @@
                 if (!hasRealData) {
                     // Show "No data yet" message instead of empty chart
                     ctx.parentElement.innerHTML = `
-                        <h3 style="margin-bottom: 1rem; color: #92400e;">Blog Post Views Chart</h3>
+                        <h3 style="margin-bottom: 1rem; color: #92400e;">Website Traffic Analytics</h3>
                         <div style="text-align: center; padding: 3rem; color: #666; background: #f9fafb; border-radius: 8px; border: 2px dashed #d1d5db;">
                             <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; color: #d1d5db;"></i>
                             <p>No analytics data yet. Start getting visitors to see charts here!</p>
@@ -2537,14 +2635,14 @@
                 // Reset blog chart container
                 const blogChartContainer = document.querySelector('#blog-chart').parentElement;
                 blogChartContainer.innerHTML = `
-                    <h3 style="margin-bottom: 1rem; color: #92400e;">Blog Post Views Chart</h3>
+                    <h3 style="margin-bottom: 1rem; color: #92400e;">Website Traffic Analytics</h3>
                     <canvas id="blog-chart" width="400" height="200"></canvas>
                 `;
 
                 // Reset email chart container  
                 const emailChartContainer = document.querySelector('#email-chart').parentElement;
                 emailChartContainer.innerHTML = `
-                    <h3 style="margin-bottom: 1rem; color: #92400e;">Email Campaign Performance</h3>
+                    <h3 style="margin-bottom: 1rem; color: #92400e;">User Engagement Overview</h3>
                     <canvas id="email-chart" width="400" height="200"></canvas>
                 `;
             }
