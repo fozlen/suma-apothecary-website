@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suma Apothecary - Admin Panel</title>
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -15,66 +21,260 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
             min-height: 100vh;
+            color: #333;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             padding: 2rem;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .login-box {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #d97706, #ea580c);
-            color: white;
-            padding: 2rem;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
             text-align: center;
         }
 
-        .header h1 {
+        .login-header {
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            color: #92400e;
             font-size: 2rem;
             margin-bottom: 0.5rem;
         }
 
-        .content {
-            padding: 2rem;
+        .login-header p {
+            color: #666;
         }
 
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #fed7aa;
-            margin-bottom: 2rem;
+        .login-form .form-group {
+            margin-bottom: 1.5rem;
         }
 
-        .tab {
-            padding: 1rem 2rem;
-            background: none;
-            border: none;
+        .login-form input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #fed7aa;
+            border-radius: 10px;
             font-size: 1rem;
-            cursor: pointer;
-            color: #92400e;
-            border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
         }
 
-        .tab.active {
-            border-bottom-color: #d97706;
-            background: #fef7ed;
+        .login-form input:focus {
+            outline: none;
+            border-color: #d97706;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
         }
 
-        .tab-content {
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #d97706, #ea580c);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #b45309, #c2410c);
+            transform: translateY(-2px);
+        }
+
+        /* Main Admin Layout */
+        .admin-layout {
             display: none;
+            min-height: 100vh;
         }
 
-        .tab-content.active {
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, #d97706, #ea580c);
+            color: white;
+            text-align: center;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
             display: block;
+            padding: 1rem 2rem;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #fef7ed;
+            color: #d97706;
+            border-left-color: #d97706;
+        }
+
+        .nav-item i {
+            margin-right: 1rem;
+            width: 20px;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            color: #92400e;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, #fef7ed, #fed7aa);
+            border-bottom: 1px solid #fed7aa;
+        }
+
+        .section-title {
+            color: #92400e;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: #666;
+        }
+
+        .section-content {
+            padding: 2rem;
+        }
+
+        /* Dashboard Styles */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #fef7ed, #fed7aa);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            border-left: 4px solid #d97706;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #d97706;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
         }
 
         .form-group {
             margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
         }
 
         .form-group label {
@@ -88,11 +288,11 @@
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.75rem;
+            padding: 1rem;
             border: 2px solid #fed7aa;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .form-group input:focus,
@@ -100,21 +300,86 @@
         .form-group textarea:focus {
             outline: none;
             border-color: #d97706;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
         }
 
-        .form-group textarea {
-            min-height: 200px;
-            resize: vertical;
+        /* Rich Text Editor */
+        .editor-container {
+            border: 2px solid #fed7aa;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        .btn {
-            padding: 0.75rem 1.5rem;
+        .ql-toolbar {
             border: none;
-            border-radius: 8px;
+            border-bottom: 1px solid #fed7aa;
+        }
+
+        .ql-container {
+            border: none;
+            min-height: 300px;
+        }
+
+        /* File Upload */
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            border: 3px dashed #fed7aa;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: #666;
+        }
+
+        .file-upload-label:hover {
+            border-color: #d97706;
+            background: #fef7ed;
+        }
+
+        .file-upload-label i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #d97706;
+        }
+
+        .image-preview {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-primary {
@@ -127,289 +392,1068 @@
             transform: translateY(-2px);
         }
 
-        .btn-danger {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
         }
 
-        .btn-danger:hover {
-            background: linear-gradient(135deg, #b91c1c, #991b1b);
-            transform: translateY(-2px);
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
         }
 
-        .post-list {
-            list-style: none;
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
-        .post-item {
+        /* Blog Post List */
+        .post-card {
             background: #fef7ed;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 15px;
             border-left: 4px solid #d97706;
+            transition: all 0.3s ease;
         }
 
-        .post-item h3 {
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-card-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .post-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .post-title {
             color: #92400e;
+            font-size: 1.3rem;
             margin-bottom: 0.5rem;
         }
 
-        .post-item p {
+        .post-excerpt {
             color: #666;
-            margin-bottom: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
         }
 
         .post-actions {
             display: flex;
             gap: 1rem;
+            flex-wrap: wrap;
         }
 
-        .alert {
-            padding: 1rem;
-            border-radius: 8px;
+        /* Email Management */
+        .subscriber-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #fed7aa;
             margin-bottom: 1rem;
         }
 
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #10b981;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #dc2626;
-        }
-
-        .preview {
+        .email-template {
             background: #f9fafb;
             padding: 2rem;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 2px dashed #d1d5db;
+            margin-top: 2rem;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 9999;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                color: #d97706;
+                cursor: pointer;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Search and Filters */
+        .search-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filter-select {
+            min-width: 150px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #fed7aa;
+            background: white;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover,
+        .pagination button.active {
+            background: #d97706;
+            color: white;
+            border-color: #d97706;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            color: #d97706;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🌿 Suma Apothecary Admin Panel</h1>
-            <p>Blog Yönetim Sistemi</p>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>🌿 Suma Apothecary</h1>
+                <p>Admin Panel Girişi</p>
+            </div>
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Şifre" required>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                </button>
+            </form>
         </div>
+    </div>
 
-        <div class="content">
-            <div class="tabs">
-                <button class="tab active" onclick="showTab('posts')">📝 Blog Yazıları</button>
-                <button class="tab" onclick="showTab('new-post')">➕ Yeni Yazı</button>
-                <button class="tab" onclick="showTab('subscribers')">📧 Aboneler</button>
+    <!-- Main Admin Layout -->
+    <div id="admin-layout" class="admin-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>🌿 Suma Admin</h2>
+                <p>Yönetim Paneli</p>
+            </div>
+            <div class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" data-section="posts">
+                    <i class="fas fa-edit"></i> Blog Yazıları
+                </a>
+                <a href="#" class="nav-item" data-section="new-post">
+                    <i class="fas fa-plus-circle"></i> Yeni Yazı
+                </a>
+                <a href="#" class="nav-item" data-section="media">
+                    <i class="fas fa-images"></i> Medya
+                </a>
+                <a href="#" class="nav-item" data-section="subscribers">
+                    <i class="fas fa-users"></i> Aboneler
+                </a>
+                <a href="#" class="nav-item" data-section="emails">
+                    <i class="fas fa-envelope"></i> Email Kampanyaları
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i> Ayarlar
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title" id="page-title">Dashboard</h1>
+                <div class="user-info">
+                    <button class="theme-toggle" id="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <span>Admin</span>
+                    <button class="logout-btn" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Çıkış
+                    </button>
+                </div>
             </div>
 
-            <!-- Blog Posts Tab -->
-            <div id="posts-tab" class="tab-content active">
-                <h2>Mevcut Blog Yazıları</h2>
-                <div id="posts-list"></div>
-            </div>
-
-            <!-- New Post Tab -->
-            <div id="new-post-tab" class="tab-content">
-                <h2>Yeni Blog Yazısı Ekle</h2>
-                <form id="new-post-form">
-                    <div class="form-group">
-                        <label for="post-id">ID (URL için):</label>
-                        <input type="text" id="post-id" required placeholder="ornek: aromatherapy-guide">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="section-header">
+                    <h2 class="section-title">Dashboard</h2>
+                    <p class="section-subtitle">Blog ve email istatistikleriniz</p>
+                </div>
+                <div class="section-content">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-posts">0</div>
+                            <div class="stat-label">Toplam Blog Yazısı</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-subscribers">0</div>
+                            <div class="stat-label">Email Abonesi</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="monthly-views">0</div>
+                            <div class="stat-label">Aylık Görüntüleme</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="email-open-rate">0%</div>
+                            <div class="stat-label">Email Açılma Oranı</div>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="post-category">Kategori:</label>
-                        <select id="post-category" required>
-                            <option value="">Kategori Seçin</option>
+
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 1rem; color: #92400e;">Blog Yazısı Görüntülenme Grafigi</h3>
+                        <canvas id="blog-chart" width="400" height="200"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3 style="margin-bottom: 1rem; color: #92400e;">Email Kampanya Performansı</h3>
+                        <canvas id="email-chart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Posts Section -->
+            <section id="posts-section" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Blog Yazıları</h2>
+                    <p class="section-subtitle">Mevcut yazılarınızı yönetin</p>
+                </div>
+                <div class="section-content">
+                    <div class="search-filters">
+                        <input type="text" class="search-input" placeholder="Yazı ara..." id="search-posts">
+                        <select class="filter-select" id="filter-category">
+                            <option value="">Tüm Kategoriler</option>
                             <option value="Chakra Guide">Chakra Guide</option>
                             <option value="Aromatherapy">Aromatherapy</option>
                             <option value="Product Care">Product Care</option>
                             <option value="Wellness Tips">Wellness Tips</option>
                         </select>
+                        <button class="btn btn-primary" onclick="admin.showSection('new-post')">
+                            <i class="fas fa-plus"></i> Yeni Yazı
+                        </button>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="post-title">Başlık:</label>
-                        <input type="text" id="post-title" required placeholder="Blog yazısının başlığı">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="post-excerpt">Özet:</label>
-                        <textarea id="post-excerpt" required placeholder="Kısa özet (blog listesinde görünecek)"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="post-content">İçerik (HTML):</label>
-                        <textarea id="post-content" required placeholder="<h2>Başlık</h2><p>İçerik...</p>"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="post-image">Görsel Açıklaması:</label>
-                        <input type="text" id="post-image" required placeholder="örnek: Aromatherapy">
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">📝 Yazı Ekle</button>
-                </form>
-                
-                <div id="new-post-preview" class="preview" style="display: none;">
-                    <h3>Önizleme:</h3>
-                    <div id="preview-content"></div>
+                    <div id="posts-list"></div>
+                    <div class="pagination" id="posts-pagination"></div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Subscribers Tab -->
-            <div id="subscribers-tab" class="tab-content">
-                <h2>Email Aboneleri</h2>
-                <p>Bu bölümde email abonelerinizi yönetebilir ve yeni blog yazıları için mail gönderebilirsiniz.</p>
-                
-                <div class="alert alert-success">
-                    <strong>💡 Önerilen Email Servisleri:</strong><br>
-                    • <strong>EmailJS</strong> - Ücretsiz (200 email/ay)<br>
-                    • <strong>Mailchimp</strong> - Ücretsiz (2000 abone, 12000 email/ay)<br>
-                    • <strong>ConvertKit</strong> - Ücretsiz (1000 abone)<br>
-                    • <strong>Brevo (Sendinblue)</strong> - Ücretsiz (300 email/gün)
+            <!-- New Post Section -->
+            <section id="new-post-section" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Yeni Blog Yazısı</h2>
+                    <p class="section-subtitle">Yeni bir blog yazısı oluşturun</p>
                 </div>
-                
-                <div id="subscribers-list">
-                    <p>Email servisi entegrasyonu sonrası abone listesi burada görünecek.</p>
+                <div class="section-content">
+                    <form id="post-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="post-id">URL ID:</label>
+                                <input type="text" id="post-id" placeholder="ornek: yeni-blog-yazisi" required>
+                                <small style="color: #666; font-size: 0.9rem;">URL'de görünecek kimlik (sadece küçük harf, tire ve rakam)</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="post-category">Kategori:</label>
+                                <select id="post-category" required>
+                                    <option value="">Kategori Seçin</option>
+                                    <option value="Chakra Guide">Chakra Guide</option>
+                                    <option value="Aromatherapy">Aromatherapy</option>
+                                    <option value="Product Care">Product Care</option>
+                                    <option value="Wellness Tips">Wellness Tips</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="post-title">Başlık:</label>
+                            <input type="text" id="post-title" placeholder="Blog yazısının başlığı" required>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="post-excerpt">Kısa Açıklama:</label>
+                            <textarea id="post-excerpt" placeholder="Blog listesinde görünecek kısa açıklama (max 200 karakter)" rows="3" required maxlength="200"></textarea>
+                            <small style="color: #666; font-size: 0.9rem;">
+                                <span id="excerpt-count">0</span>/200 karakter
+                            </small>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="post-image-upload">Kapak Görseli:</label>
+                            <div class="file-upload">
+                                <input type="file" id="post-image-upload" accept="image/*">
+                                <label for="post-image-upload" class="file-upload-label">
+                                    <div>
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Görsel yüklemek için tıklayın</p>
+                                        <small>PNG, JPG, WebP (Max 5MB)</small>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="image-preview" id="image-preview"></div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="post-content">İçerik:</label>
+                            <div class="editor-container">
+                                <div id="post-content-editor" style="min-height: 400px;"></div>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-secondary" id="save-draft">
+                                <i class="fas fa-save"></i> Taslak Kaydet
+                            </button>
+                            <button type="button" class="btn btn-primary" id="preview-post">
+                                <i class="fas fa-eye"></i> Önizleme
+                            </button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-paper-plane"></i> Yayınla
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            <!-- Other sections will be added here -->
+            <!-- Media Section -->
+            <section id="media-section" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Medya Kütüphanesi</h2>
+                    <p class="section-subtitle">Yüklediğiniz görselleri yönetin</p>
+                </div>
+                <div class="section-content">
+                    <p style="text-align: center; color: #666; padding: 3rem;">
+                        <i class="fas fa-images" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i><br>
+                        Medya kütüphanesi geliştiriliyor...
+                    </p>
+                </div>
+            </section>
+
+            <!-- Subscribers Section -->
+            <section id="subscribers-section" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Email Aboneleri</h2>
+                    <p class="section-subtitle">Newsletter abonelerinizi yönetin</p>
+                </div>
+                <div class="section-content">
+                    <div class="stats-grid" style="margin-bottom: 2rem;">
+                        <div class="stat-card">
+                            <div class="stat-number">245</div>
+                            <div class="stat-label">Aktif Abone</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Bu Ay Yeni</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">3.2%</div>
+                            <div class="stat-label">Aylık Büyüme</div>
+                        </div>
+                    </div>
+                    
+                    <p style="text-align: center; color: #666; padding: 2rem;">
+                        Email servisi (Mailchimp) entegrasyonu sonrası abone listesi burada görünecek.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Email Campaigns Section -->
+            <section id="emails-section" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Email Kampanyaları</h2>
+                    <p class="section-subtitle">Newsletter kampanyalarınızı yönetin</p>
+                </div>
+                <div class="section-content">
+                    <p style="text-align: center; color: #666; padding: 3rem;">
+                        <i class="fas fa-envelope" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i><br>
+                        Email kampanya yönetimi geliştiriliyor...
+                    </p>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Ayarlar</h2>
+                    <p class="section-subtitle">Admin panel ayarları</p>
+                </div>
+                <div class="section-content">
+                    <p style="text-align: center; color: #666; padding: 3rem;">
+                        <i class="fas fa-cog" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i><br>
+                        Ayarlar paneli geliştiriliyor...
+                    </p>
+                </div>
+            </section>
+        </main>
     </div>
 
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
     <script>
-        let blogData = {
-            posts: []
-        };
-
-        // Load blog data
-        async function loadBlogData() {
-            try {
-                const response = await fetch('blog-data.json');
-                blogData = await response.json();
-                displayPosts();
-            } catch (error) {
-                console.error('Blog data loading error:', error);
+        // Admin Panel JavaScript
+        class SumaAdmin {
+            constructor() {
+                this.blogData = { posts: [] };
+                this.currentUser = null;
+                this.quillEditor = null;
+                this.init();
             }
-        }
 
-        // Display posts
-        function displayPosts() {
-            const postsList = document.getElementById('posts-list');
-            postsList.innerHTML = '';
-            
-            if (blogData.posts.length === 0) {
-                postsList.innerHTML = '<p>Henüz blog yazısı yok.</p>';
-                return;
+            init() {
+                this.setupEventListeners();
+                this.loadBlogData();
+                this.checkAuth();
             }
-            
-            blogData.posts.forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.className = 'post-item';
-                postElement.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <p><strong>Kategori:</strong> ${post.category} | <strong>Tarih:</strong> ${post.date}</p>
-                    <p>${post.excerpt}</p>
-                    <div class="post-actions">
-                        <button class="btn btn-primary" onclick="editPost('${post.id}')">✏️ Düzenle</button>
-                        <button class="btn btn-danger" onclick="deletePost('${post.id}')">🗑️ Sil</button>
-                    </div>
-                `;
-                postsList.appendChild(postElement);
-            });
-        }
 
-        // Show tabs
-        function showTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabName + '-tab').classList.add('active');
-            event.target.classList.add('active');
-        }
+            setupEventListeners() {
+                // Login form
+                document.getElementById('login-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleLogin();
+                });
 
-        // Add new post
-        document.getElementById('new-post-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const newPost = {
-                id: document.getElementById('post-id').value,
-                category: document.getElementById('post-category').value,
-                title: document.getElementById('post-title').value,
-                excerpt: document.getElementById('post-excerpt').value,
-                content: document.getElementById('post-content').value,
-                image: document.getElementById('post-image').value,
-                date: new Date().toISOString().split('T')[0],
-                author: "Suma Apothecary"
-            };
-            
-            // Add to blogData
-            blogData.posts.unshift(newPost);
-            
-            // Show success message
-            alert('✅ Blog yazısı başarıyla eklendi!');
-            
-            // Reset form
-            this.reset();
-            
-            // Refresh posts list
-            displayPosts();
-            
-            // Download updated JSON
-            downloadBlogData();
-        });
+                // Logout button
+                document.getElementById('logout-btn').addEventListener('click', () => {
+                    this.handleLogout();
+                });
 
-        // Edit post
-        function editPost(postId) {
-            const post = blogData.posts.find(p => p.id === postId);
-            if (post) {
+                // Navigation
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const section = e.currentTarget.dataset.section;
+                        this.showSection(section);
+                    });
+                });
+
+                // Mobile menu
+                document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                    document.getElementById('sidebar').classList.toggle('open');
+                });
+
+                // Post form
+                document.getElementById('post-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handlePostSubmit();
+                });
+
+                // Character counter for excerpt
+                document.getElementById('post-excerpt').addEventListener('input', (e) => {
+                    document.getElementById('excerpt-count').textContent = e.target.value.length;
+                });
+
+                // File upload
+                document.getElementById('post-image-upload').addEventListener('change', (e) => {
+                    this.handleImageUpload(e);
+                });
+
+                // Search and filter
+                document.getElementById('search-posts').addEventListener('input', (e) => {
+                    this.filterPosts();
+                });
+
+                document.getElementById('filter-category').addEventListener('change', (e) => {
+                    this.filterPosts();
+                });
+            }
+
+            checkAuth() {
+                const savedAuth = localStorage.getItem('suma-admin-auth');
+                if (savedAuth) {
+                    this.currentUser = JSON.parse(savedAuth);
+                    this.showAdminPanel();
+                } else {
+                    this.showLoginScreen();
+                }
+            }
+
+            handleLogin() {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                // Simple auth (in production, use proper authentication)
+                if (username === 'suma-admin' && password === 'suma2025!') {
+                    this.currentUser = { username, loginTime: new Date().toISOString() };
+                    localStorage.setItem('suma-admin-auth', JSON.stringify(this.currentUser));
+                    this.showAdminPanel();
+                    this.showNotification('Başarıyla giriş yaptınız!', 'success');
+                } else {
+                    this.showNotification('Hatalı kullanıcı adı veya şifre!', 'error');
+                }
+            }
+
+            handleLogout() {
+                localStorage.removeItem('suma-admin-auth');
+                this.currentUser = null;
+                this.showLoginScreen();
+                this.showNotification('Çıkış yapıldı', 'success');
+            }
+
+            showLoginScreen() {
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('admin-layout').style.display = 'none';
+            }
+
+            showAdminPanel() {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-layout').style.display = 'block';
+                this.initializeAdminFeatures();
+            }
+
+            initializeAdminFeatures() {
+                // Initialize rich text editor
+                if (!this.quillEditor) {
+                    this.quillEditor = new Quill('#post-content-editor', {
+                        theme: 'snow',
+                        modules: {
+                            toolbar: [
+                                [{ 'header': [1, 2, 3, false] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                ['link', 'image'],
+                                ['clean']
+                            ]
+                        }
+                    });
+                }
+
+                // Initialize charts
+                this.initializeCharts();
+                
+                // Update dashboard stats
+                this.updateDashboardStats();
+                
+                // Load posts
+                this.displayPosts();
+            }
+
+            initializeCharts() {
+                // Blog views chart
+                const blogCtx = document.getElementById('blog-chart').getContext('2d');
+                new Chart(blogCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran'],
+                        datasets: [{
+                            label: 'Blog Görüntülenme',
+                            data: [120, 190, 300, 500, 420, 680],
+                            borderColor: '#d97706',
+                            backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Email performance chart
+                const emailCtx = document.getElementById('email-chart').getContext('2d');
+                new Chart(emailCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Gönderilen', 'Açılan', 'Tıklanan', 'Abonelikten Çıkan'],
+                        datasets: [{
+                            label: 'Email Metrikleri',
+                            data: [1000, 750, 320, 12],
+                            backgroundColor: [
+                                '#d97706',
+                                '#10b981',
+                                '#3b82f6',
+                                '#ef4444'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            async loadBlogData() {
+                try {
+                    const response = await fetch('blog-data.json');
+                    this.blogData = await response.json();
+                } catch (error) {
+                    console.error('Blog data loading error:', error);
+                    this.blogData = { posts: [] };
+                }
+            }
+
+            updateDashboardStats() {
+                document.getElementById('total-posts').textContent = this.blogData.posts.length;
+                document.getElementById('total-subscribers').textContent = '245'; // Mock data
+                document.getElementById('monthly-views').textContent = '2.1K'; // Mock data
+                document.getElementById('email-open-rate').textContent = '75%'; // Mock data
+            }
+
+            showSection(sectionName) {
+                // Hide all sections
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Remove active from nav items
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Show selected section
+                document.getElementById(sectionName + '-section').classList.add('active');
+                
+                // Set active nav item
+                document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+
+                // Update page title
+                const titles = {
+                    'dashboard': 'Dashboard',
+                    'posts': 'Blog Yazıları',
+                    'new-post': 'Yeni Yazı',
+                    'media': 'Medya Kütüphanesi',
+                    'subscribers': 'Aboneler',
+                    'emails': 'Email Kampanyaları',
+                    'settings': 'Ayarlar'
+                };
+                document.getElementById('page-title').textContent = titles[sectionName] || 'Admin Panel';
+            }
+
+            displayPosts() {
+                const postsContainer = document.getElementById('posts-list');
+                postsContainer.innerHTML = '';
+
+                if (this.blogData.posts.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: #666;">
+                            <i class="fas fa-edit" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i>
+                            <p>Henüz blog yazısı yok. İlk yazınızı oluşturun!</p>
+                            <button class="btn btn-primary" style="margin-top: 1rem;" onclick="admin.showSection('new-post')">
+                                <i class="fas fa-plus"></i> Yeni Yazı Oluştur
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                this.blogData.posts.forEach(post => {
+                    const postCard = document.createElement('div');
+                    postCard.className = 'post-card';
+                    postCard.innerHTML = `
+                        <div class="post-card-header">
+                            <div>
+                                <div class="post-meta">
+                                    <span class="badge" style="background: #d97706; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem;">
+                                        ${post.category}
+                                    </span>
+                                    <span style="margin-left: 1rem; color: #666;">
+                                        ${new Date(post.date).toLocaleDateString('tr-TR')}
+                                    </span>
+                                </div>
+                                <h3 class="post-title">${post.title}</h3>
+                                <p class="post-excerpt">${post.excerpt}</p>
+                            </div>
+                        </div>
+                        <div class="post-actions">
+                            <button class="btn btn-primary" onclick="admin.editPost('${post.id}')">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </button>
+                            <button class="btn btn-secondary" onclick="admin.viewPost('${post.id}')">
+                                <i class="fas fa-eye"></i> Görüntüle
+                            </button>
+                            <button class="btn btn-success" onclick="admin.sendNewsletterForPost('${post.id}')">
+                                <i class="fas fa-paper-plane"></i> Newsletter Gönder
+                            </button>
+                            <button class="btn btn-danger" onclick="admin.deletePost('${post.id}')">
+                                <i class="fas fa-trash"></i> Sil
+                            </button>
+                        </div>
+                    `;
+                    postsContainer.appendChild(postCard);
+                });
+            }
+
+            filterPosts() {
+                const searchTerm = document.getElementById('search-posts').value.toLowerCase();
+                const selectedCategory = document.getElementById('filter-category').value;
+
+                const filteredPosts = this.blogData.posts.filter(post => {
+                    const matchesSearch = post.title.toLowerCase().includes(searchTerm) || 
+                                        post.excerpt.toLowerCase().includes(searchTerm);
+                    const matchesCategory = !selectedCategory || post.category === selectedCategory;
+                    return matchesSearch && matchesCategory;
+                });
+
+                // Update display with filtered posts
+                this.displayFilteredPosts(filteredPosts);
+            }
+
+            displayFilteredPosts(posts) {
+                const postsContainer = document.getElementById('posts-list');
+                postsContainer.innerHTML = '';
+
+                if (posts.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: #666;">
+                            <i class="fas fa-search" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i>
+                            <p>Arama kriterlerinize uygun yazı bulunamadı.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                posts.forEach(post => {
+                    const postCard = document.createElement('div');
+                    postCard.className = 'post-card';
+                    postCard.innerHTML = `
+                        <div class="post-card-header">
+                            <div>
+                                <div class="post-meta">
+                                    <span class="badge" style="background: #d97706; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem;">
+                                        ${post.category}
+                                    </span>
+                                    <span style="margin-left: 1rem; color: #666;">
+                                        ${new Date(post.date).toLocaleDateString('tr-TR')}
+                                    </span>
+                                </div>
+                                <h3 class="post-title">${post.title}</h3>
+                                <p class="post-excerpt">${post.excerpt}</p>
+                            </div>
+                        </div>
+                        <div class="post-actions">
+                            <button class="btn btn-primary" onclick="admin.editPost('${post.id}')">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </button>
+                            <button class="btn btn-secondary" onclick="admin.viewPost('${post.id}')">
+                                <i class="fas fa-eye"></i> Görüntüle
+                            </button>
+                            <button class="btn btn-success" onclick="admin.sendNewsletterForPost('${post.id}')">
+                                <i class="fas fa-paper-plane"></i> Newsletter Gönder
+                            </button>
+                            <button class="btn btn-danger" onclick="admin.deletePost('${post.id}')">
+                                <i class="fas fa-trash"></i> Sil
+                            </button>
+                        </div>
+                    `;
+                    postsContainer.appendChild(postCard);
+                });
+            }
+
+            handleImageUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                // Validate file
+                if (!file.type.startsWith('image/')) {
+                    this.showNotification('Lütfen geçerli bir görsel dosyası seçin!', 'error');
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) { // 5MB
+                    this.showNotification('Dosya boyutu 5MB\'dan küçük olmalıdır!', 'error');
+                    return;
+                }
+
+                // Create preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('image-preview');
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview">
+                        <p style="margin-top: 1rem; color: #666;">
+                            ${file.name} (${(file.size / 1024).toFixed(1)} KB)
+                        </p>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            handlePostSubmit() {
+                const postData = {
+                    id: document.getElementById('post-id').value,
+                    category: document.getElementById('post-category').value,
+                    title: document.getElementById('post-title').value,
+                    excerpt: document.getElementById('post-excerpt').value,
+                    content: this.quillEditor.root.innerHTML,
+                    image: document.getElementById('post-image-upload').files[0]?.name || 'Default Image',
+                    date: new Date().toISOString().split('T')[0],
+                    author: 'Suma Apothecary'
+                };
+
+                // Validate required fields
+                if (!postData.id || !postData.category || !postData.title || !postData.excerpt) {
+                    this.showNotification('Lütfen tüm zorunlu alanları doldurun!', 'error');
+                    return;
+                }
+
+                // Add or update post
+                const existingIndex = this.blogData.posts.findIndex(p => p.id === postData.id);
+                if (existingIndex !== -1) {
+                    this.blogData.posts[existingIndex] = postData;
+                    this.showNotification('Blog yazısı güncellendi!', 'success');
+                } else {
+                    this.blogData.posts.unshift(postData);
+                    this.showNotification('Blog yazısı oluşturuldu!', 'success');
+                }
+
+                // Reset form
+                document.getElementById('post-form').reset();
+                this.quillEditor.setContents([]);
+                document.getElementById('image-preview').innerHTML = '';
+                document.getElementById('excerpt-count').textContent = '0';
+
+                // Update displays
+                this.displayPosts();
+                this.updateDashboardStats();
+
+                // Download updated JSON
+                this.downloadBlogData();
+
+                // Switch to posts view
+                this.showSection('posts');
+            }
+
+            editPost(postId) {
+                const post = this.blogData.posts.find(p => p.id === postId);
+                if (!post) return;
+
                 // Fill form with post data
                 document.getElementById('post-id').value = post.id;
                 document.getElementById('post-category').value = post.category;
                 document.getElementById('post-title').value = post.title;
                 document.getElementById('post-excerpt').value = post.excerpt;
-                document.getElementById('post-content').value = post.content;
-                document.getElementById('post-image').value = post.image;
-                
+                document.getElementById('excerpt-count').textContent = post.excerpt.length;
+
+                // Set content in editor
+                if (this.quillEditor) {
+                    this.quillEditor.root.innerHTML = post.content;
+                }
+
                 // Switch to new post tab
-                showTab('new-post');
-                document.querySelector('.tab[onclick="showTab(\'new-post\')"]').classList.add('active');
+                this.showSection('new-post');
+            }
+
+            viewPost(postId) {
+                const post = this.blogData.posts.find(p => p.id === postId);
+                if (!post) return;
+
+                // Open post in new tab (you could create a preview modal instead)
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>${post.title}</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; }
+                            h1 { color: #92400e; }
+                            .meta { color: #666; margin-bottom: 2rem; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>${post.title}</h1>
+                        <div class="meta">
+                            <strong>Kategori:</strong> ${post.category} | 
+                            <strong>Tarih:</strong> ${new Date(post.date).toLocaleDateString('tr-TR')}
+                        </div>
+                        <div>${post.content}</div>
+                    </body>
+                    </html>
+                `);
+            }
+
+            deletePost(postId) {
+                if (!confirm('Bu blog yazısını silmek istediğinizden emin misiniz?')) return;
+
+                this.blogData.posts = this.blogData.posts.filter(p => p.id !== postId);
+                this.displayPosts();
+                this.updateDashboardStats();
+                this.downloadBlogData();
+                this.showNotification('Blog yazısı silindi!', 'success');
+            }
+
+            sendNewsletterForPost(postId) {
+                const post = this.blogData.posts.find(p => p.id === postId);
+                if (!post) return;
+
+                if (confirm(`"${post.title}" yazısı için newsletter göndermek istediğinizden emin misiniz?`)) {
+                    // Simulate newsletter sending
+                    this.showNotification('Newsletter gönderimi başladı...', 'warning');
+                    
+                    setTimeout(() => {
+                        this.showNotification('Newsletter başarıyla gönderildi!', 'success');
+                    }, 2000);
+                }
+            }
+
+            downloadBlogData() {
+                const dataStr = JSON.stringify(this.blogData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = 'blog-data.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            }
+
+            showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                    ${message}
+                `;
+
+                document.getElementById('notification-container').appendChild(notification);
+
+                // Show notification
+                setTimeout(() => notification.classList.add('show'), 100);
+
+                // Hide notification
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
             }
         }
 
-        // Delete post
-        function deletePost(postId) {
-            if (confirm('Bu blog yazısını silmek istediğinizden emin misiniz?')) {
-                blogData.posts = blogData.posts.filter(p => p.id !== postId);
-                displayPosts();
-                downloadBlogData();
-                alert('✅ Blog yazısı silindi!');
-            }
-        }
+        // Initialize admin panel
+        const admin = new SumaAdmin();
 
-        // Download blog data as JSON
-        function downloadBlogData() {
-            const dataStr = JSON.stringify(blogData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = 'blog-data.json';
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-        }
-
-        // Initialize
-        loadBlogData();
+        // Make some functions global for onclick handlers
+        window.admin = admin;
     </script>
 </body>
 </html> 
