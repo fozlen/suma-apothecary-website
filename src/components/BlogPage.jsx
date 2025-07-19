@@ -136,50 +136,47 @@ const BlogPage = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogPosts.map((post) => (
-              <article key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <div className="h-48 bg-gradient-to-br from-amber-200 to-orange-300 relative">
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                      {post.category}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="p-6">
-                  <h2 className="text-xl font-bold text-amber-900 mb-3 line-clamp-2 hover:text-amber-700 transition-colors">
-                    <Link to={`/blog/${post.slug}`}>
-                      {post.title}
-                    </Link>
-                  </h2>
-                  
-                  <p className="text-amber-700 mb-4 line-clamp-3">
-                    {post.excerpt}
-                  </p>
-                  
-                  <div className="flex items-center justify-between text-sm text-amber-600 mb-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-1">
-                        <User className="w-4 h-4" />
-                        <span>{post.author}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Calendar className="w-4 h-4" />
-                        <span>{new Date(post.date).toLocaleDateString()}</span>
-                      </div>
+              <Link key={post.id} to={`/blog/${post.slug}`} className="block">
+                <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+                  <div className="h-48 bg-gradient-to-br from-amber-200 to-orange-300 relative">
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {post.category}
+                      </span>
                     </div>
                   </div>
                   
-                  <Link 
-                    to={`/blog/${post.slug}`}
-                    className="inline-flex items-center space-x-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
-                  >
-                    <span>Read More</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-              </article>
+                  <div className="p-6">
+                    <h2 className="text-xl font-bold text-amber-900 mb-3 line-clamp-2 hover:text-amber-700 transition-colors">
+                      {post.title}
+                    </h2>
+                    
+                    <p className="text-amber-700 mb-4 line-clamp-3">
+                      {post.excerpt}
+                    </p>
+                    
+                    <div className="flex items-center justify-between text-sm text-amber-600 mb-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-1">
+                          <User className="w-4 h-4" />
+                          <span>{post.author}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Calendar className="w-4 h-4" />
+                          <span>{new Date(post.date).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="inline-flex items-center space-x-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                      <span>Read More</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </article>
+              </Link>
             ))}
           </div>
         </div>
