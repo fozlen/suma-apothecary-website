@@ -617,6 +617,52 @@
             font-weight: 600;
         }
 
+        /* Settings Panel */
+        .settings-panel {
+            max-width: 800px;
+        }
+
+        .setting-group {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .setting-group h3 {
+            margin: 0 0 0.5rem 0;
+            color: #92400e;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #374151;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .setting-info p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
@@ -1032,10 +1078,37 @@
                     <p class="section-subtitle">Admin panel settings</p>
                 </div>
                 <div class="section-content">
-                    <p style="text-align: center; color: #666; padding: 3rem;">
-                        <i class="fas fa-cog" style="font-size: 4rem; margin-bottom: 1rem; color: #d97706;"></i><br>
-                        Settings panel is under development...
-                    </p>
+                    <div class="settings-panel">
+                        <div class="setting-group">
+                            <h3>Analytics & Data</h3>
+                            <p style="color: #666; margin-bottom: 1rem;">Manage your website analytics and subscriber data</p>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Reset All Analytics Data</h4>
+                                    <p>Clear all analytics data, subscriber lists, and statistics. This will reset all counters to zero.</p>
+                                </div>
+                                <button class="btn btn-danger" onclick="admin.resetAllAnalytics()">
+                                    <i class="fas fa-trash-alt"></i> Reset Data
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="setting-group">
+                            <h3>Email Integration</h3>
+                            <p style="color: #666; margin-bottom: 1rem;">Configure email services for newsletters and notifications</p>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Email Service Provider</h4>
+                                    <p>Connect with Mailchimp, ConvertKit, or EmailJS for automated email sending</p>
+                                </div>
+                                <button class="btn btn-secondary" disabled>
+                                    <i class="fas fa-envelope"></i> Configure (Coming Soon)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
@@ -1315,7 +1388,7 @@
                 return {
                     subscribers: this.getStoredSubscriberCount(),
                     monthlyViews: pageViews > 0 ? this.formatNumber(pageViews) : '0',
-                    emailOpenRate: `${Math.min(75 + Math.floor(Math.random() * 20), 95)}%`, // Simulated but realistic
+                    emailOpenRate: this.calculateEmailOpenRate(newsletterSignups), // Real calculation based on actual data
                     pageViews,
                     newsletterSignups,
                     blogClicks,
@@ -1326,17 +1399,27 @@
                 };
             }
 
+            calculateEmailOpenRate(newsletterSignups) {
+                // Calculate based on real data - if no newsletters sent, return 0%
+                if (newsletterSignups === 0) {
+                    return '0%';
+                }
+                
+                                 // For now, return a placeholder until we have real email tracking
+                 // This will be updated when EmailJS or Mailchimp integration is added
+                 return '--';
+             }
+
             getStoredSubscriberCount() {
-                // Get subscriber count from localStorage or start with base number
+                // Get subscriber count from localStorage - start from 0 for real data
                 const stored = localStorage.getItem('suma_subscriber_count');
                 if (stored) {
                     return parseInt(stored);
                 }
                 
-                // Set initial count and save
-                const initialCount = 45 + Math.floor(Math.random() * 50); // Random between 45-95
-                localStorage.setItem('suma_subscriber_count', initialCount.toString());
-                return initialCount;
+                // Start with 0 - only real subscribers will be counted
+                localStorage.setItem('suma_subscriber_count', '0');
+                return 0;
             }
 
             incrementSubscriberCount() {
@@ -1686,6 +1769,22 @@
             refreshSubscribers() {
                 this.loadSubscribersData();
                 this.showNotification('Subscriber list refreshed!', 'success');
+            }
+
+            // Reset all analytics data to start fresh
+            resetAllAnalytics() {
+                if (confirm('Are you sure you want to reset all analytics data? This action cannot be undone.')) {
+                    // Clear all analytics data
+                    localStorage.removeItem('suma_analytics');
+                    localStorage.removeItem('suma_newsletter_subscribers');
+                    localStorage.setItem('suma_subscriber_count', '0');
+                    
+                    // Refresh dashboard
+                    this.updateDashboardStats();
+                    this.loadSubscribersData();
+                    
+                    this.showNotification('All analytics data has been reset!', 'success');
+                }
             }
 
             displayPosts() {

@@ -189,6 +189,15 @@
 
         // Initialize analytics
         window.sumaAnalytics = new SumaAnalytics();
+
+        // Reset analytics data for fresh start (run once)
+        if (!localStorage.getItem('suma_analytics_reset_2025')) {
+            localStorage.removeItem('suma_analytics');
+            localStorage.removeItem('suma_newsletter_subscribers');
+            localStorage.setItem('suma_subscriber_count', '0');
+            localStorage.setItem('suma_analytics_reset_2025', 'true');
+            console.log('🔄 Analytics data reset for fresh start');
+        }
     </script>
     
     <style>
