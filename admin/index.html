@@ -1328,6 +1328,9 @@
                 </div>
                 <div class="section-content">
                     <form id="post-form">
+                        <!-- Hidden ID field for editing -->
+                        <input type="hidden" id="post-id" value="">
+                        
                         <!-- Basic Info -->
                         <div class="form-section">
                             <h3 class="form-section-title">📝 Basic Information</h3>
@@ -1474,7 +1477,7 @@
 
                             <div class="form-group full-width">
                                 <label for="post-schema-type">Content Type (Schema):</label>
-                                <select id="post-schema-type">
+                                <select id="post-content-type">
                                     <option value="Article">Article (Default)</option>
                                     <option value="BlogPosting">Blog Post</option>
                                     <option value="HowTo">How-To Guide</option>
@@ -1486,7 +1489,7 @@
 
                             <div class="form-group full-width">
                                 <label for="post-canonical">Canonical URL (optional):</label>
-                                <input type="url" id="post-canonical" placeholder="https://example.com/original-article">
+                                <input type="url" id="post-canonical-url" placeholder="https://example.com/original-article">
                                 <small class="field-help">Use if this content is republished from another source</small>
                             </div>
                         </div>
@@ -3312,32 +3315,53 @@
                 });
 
                 // === 📝 BASIC INFORMATION ===
-                document.getElementById('post-id').value = post.id || '';
-                document.getElementById('post-title').value = post.title || '';
-                document.getElementById('post-slug').value = post.slug || this.generateSlug(post.title);
-                document.getElementById('post-excerpt').value = post.excerpt || '';
+                console.log('🔧 Filling basic information fields...');
+                const postIdEl = document.getElementById('post-id');
+                const postTitleEl = document.getElementById('post-title');
+                const postSlugEl = document.getElementById('post-slug');
+                const postExcerptEl = document.getElementById('post-excerpt');
+                
+                console.log('📋 Form elements found:', {
+                    'post-id': !!postIdEl,
+                    'post-title': !!postTitleEl,
+                    'post-slug': !!postSlugEl,
+                    'post-excerpt': !!postExcerptEl
+                });
+                
+                if (postIdEl) postIdEl.value = post.id || '';
+                if (postTitleEl) postTitleEl.value = post.title || '';
+                if (postSlugEl) postSlugEl.value = post.slug || this.generateSlug(post.title);
+                if (postExcerptEl) postExcerptEl.value = post.excerpt || '';
                 
                 // Update excerpt counter
                 this.updateExcerptCounter();
                 
                 // === 🎯 SEO & CATEGORIZATION ===
-                document.getElementById('post-category').value = post.category || 'Wellness Tips';
-                document.getElementById('post-tags').value = post.tags ? post.tags.join(', ') : '';
-                document.getElementById('post-keywords').value = post.keywords ? post.keywords.join(', ') : '';
-                document.getElementById('post-reading-time').value = post.readingTime || this.calculateReadingTime(post.content);
+                const postCategoryEl = document.getElementById('post-category');
+                const postTagsEl = document.getElementById('post-tags');
+                const postKeywordsEl = document.getElementById('post-keywords');
+                const postReadingTimeEl = document.getElementById('post-reading-time');
+                
+                if (postCategoryEl) postCategoryEl.value = post.category || 'Wellness Tips';
+                if (postTagsEl) postTagsEl.value = post.tags ? post.tags.join(', ') : '';
+                if (postKeywordsEl) postKeywordsEl.value = post.keywords ? post.keywords.join(', ') : '';
+                if (postReadingTimeEl) postReadingTimeEl.value = post.readingTime || this.calculateReadingTime(post.content);
 
                 // === 🖼️ MEDIA & IMAGES ===
                 // Handle featured image
                 if (post.featuredImage) {
                     const preview = document.getElementById('featured-image-preview');
-                    preview.innerHTML = `
-                        <div class="image-preview-item">
-                            <img src="${post.featuredImage}" alt="Featured Image" style="max-width: 200px; border-radius: 8px;">
-                            <small>Current featured image</small>
-                        </div>
-                    `;
+                    if (preview) {
+                        preview.innerHTML = `
+                            <div class="image-preview-item">
+                                <img src="${post.featuredImage}" alt="Featured Image" style="max-width: 200px; border-radius: 8px;">
+                                <small>Current featured image</small>
+                            </div>
+                        `;
+                    }
                 }
-                document.getElementById('post-image-alt').value = post.imageAlt || '';
+                const postImageAltEl = document.getElementById('post-image-alt');
+                if (postImageAltEl) postImageAltEl.value = post.imageAlt || '';
 
                 // Handle gallery images
                 if (post.gallery && post.gallery.length > 0) {
@@ -3356,10 +3380,15 @@
                 }
 
                 // === 🚀 ADVANCED SEO & SOCIAL ===
-                document.getElementById('post-meta-title').value = post.metaTitle || '';
-                document.getElementById('post-content-type').value = post.contentType || 'Article';
-                document.getElementById('post-status').value = post.status || 'published';
-                document.getElementById('post-canonical-url').value = post.canonicalUrl || '';
+                const postMetaTitleEl = document.getElementById('post-meta-title');
+                const postContentTypeEl = document.getElementById('post-content-type');
+                const postStatusEl = document.getElementById('post-status');
+                const postCanonicalUrlEl = document.getElementById('post-canonical-url');
+                
+                if (postMetaTitleEl) postMetaTitleEl.value = post.metaTitle || '';
+                if (postContentTypeEl) postContentTypeEl.value = post.contentType || 'Article';
+                if (postStatusEl) postStatusEl.value = post.status || 'published';
+                if (postCanonicalUrlEl) postCanonicalUrlEl.value = post.canonicalUrl || '';
 
                 // === 📱 SEO PREVIEW UPDATE ===
                 this.updateSEOPreview();
