@@ -1124,12 +1124,6 @@
                     this.showMessage('error', 'Please enter a valid email address.');
                     return;
                 }
-
-                // Check if already subscribed
-                if (this.subscribers.find(sub => sub.email === email)) {
-                    this.showMessage('error', 'This email address is already subscribed.');
-                    return;
-                }
                 
                 // Hide previous messages
                 successMsg.style.display = 'none';
@@ -1140,45 +1134,96 @@
                 submitBtn.disabled = true;
                 
                 try {
-                    // Add to local storage
-                    const subscriber = {
-                        id: Date.now(),
-                        email: email,
-                        subscriptionDate: new Date().toISOString(),
-                        status: 'active',
-                        source: 'website',
-                        ipAddress: await this.getClientIP()
-                    };
-
-                    this.subscribers.push(subscriber);
-                    this.saveSubscribers();
-
-                    // Track analytics event
-                    if (window.sumaAnalytics) {
-                        window.sumaAnalytics.trackEvent('newsletter_signup_success', {
-                            email: email,
-                            source: 'landing_page'
-                        });
-                    }
-
-                    // Simulate EmailJS call (replace with real EmailJS when configured)
-                    await this.sendWelcomeEmail(email);
-                    await new Promise(resolve => setTimeout(resolve, 800));
+                    // Subscribe to Mailchimp
+                    const result = await this.subscribeToMailchimp(email);
                     
-                    // Show success message
-                    this.showMessage('success', 'Successfully subscribed! Welcome to our newsletter.');
-                    document.getElementById('email-input').value = '';
+                    if (result.success) {
+                        // Also save locally for admin panel
+                        const subscriber = {
+                            id: Date.now(),
+                            email: email,
+                            subscriptionDate: new Date().toISOString(),
+                            status: 'active',
+                            source: 'website',
+                            mailchimpId: result.mailchimpId,
+                            ipAddress: await this.getClientIP()
+                        };
 
-                    // Update admin panel subscriber count if accessible
-                    this.updateAdminSubscriberCount();
+                        this.subscribers.push(subscriber);
+                        this.saveSubscribers();
+
+                        // Track analytics event
+                        if (window.sumaAnalytics) {
+                            window.sumaAnalytics.trackEvent('newsletter_signup_success', {
+                                email: email,
+                                source: 'landing_page',
+                                mailchimp: true
+                            });
+                        }
+                        
+                        // Show success message
+                        this.showMessage('success', '🎉 Successfully subscribed! Welcome to our wellness journey.');
+                        document.getElementById('email-input').value = '';
+
+                        // Update admin panel subscriber count
+                        this.updateAdminSubscriberCount();
+                        
+                    } else {
+                        // Handle Mailchimp errors
+                        if (result.error === 'already_subscribed') {
+                            this.showMessage('error', '📧 This email is already subscribed to our newsletter.');
+                        } else if (result.error === 'invalid_email') {
+                            this.showMessage('error', '❌ Please enter a valid email address.');
+                        } else {
+                            this.showMessage('error', '⚠️ ' + (result.message || 'Something went wrong. Please try again.'));
+                        }
+                    }
                     
                 } catch (error) {
                     console.error('Subscription error:', error);
-                    this.showMessage('error', 'An error occurred. Please try again.');
+                    this.showMessage('error', '🔗 Connection error. Please check your internet and try again.');
                 } finally {
                     // Reset button
                     submitBtn.innerHTML = 'Subscribe';
                     submitBtn.disabled = false;
+                }
+            }
+
+            async subscribeToMailchimp(email) {
+                try {
+                    console.log('🔄 Subscribing to Mailchimp via Netlify function:', email);
+
+                    const response = await fetch('/.netlify/functions/subscribe', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email: email })
+                    });
+
+                    const responseData = await response.json();
+                    console.log('📧 Netlify function response:', responseData);
+
+                    if (response.ok && responseData.success) {
+                        return {
+                            success: true,
+                            mailchimpId: responseData.mailchimpId,
+                            message: responseData.message
+                        };
+                    } else {
+                        return {
+                            success: false,
+                            error: responseData.error || 'api_error',
+                            message: responseData.message || 'Subscription failed'
+                        };
+                    }
+                } catch (error) {
+                    console.error('❌ Newsletter subscription error:', error);
+                    return {
+                        success: false,
+                        error: 'network_error',
+                        message: 'Network error occurred'
+                    };
                 }
             }
 

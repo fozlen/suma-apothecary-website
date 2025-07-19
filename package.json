@@ -1,0 +1,16 @@
+{
+  "name": "suma-apothecary-newsletter",
+  "version": "1.0.0",
+  "description": "Newsletter subscription system for Suma Apothecary",
+  "main": "index.js",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build needed'"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "netlify-cli": "^12.0.0"
+  }
+} 
