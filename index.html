@@ -321,9 +321,21 @@
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: 2fr 1fr 1fr;
             gap: 3rem;
             margin-bottom: 2rem;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
         }
 
         .footer-section h3 {
@@ -985,12 +997,11 @@
                 blogSection.innerHTML = `
                     <div class="container">
                         <button class="btn btn-secondary" onclick="resetBlogSection()" style="margin-bottom: 2rem;">← Back to Blog</button>
-                        <div class="blog-detail">
-                            <h2>${detail.title}</h2>
-                            <div class="blog-content">
-                                ${detail.content}
-                            </div>
-                        </div>
+                                                 <div class="blog-detail">
+                             <div class="blog-content">
+                                 ${detail.content}
+                             </div>
+                         </div>
                     </div>
                 `;
                 
