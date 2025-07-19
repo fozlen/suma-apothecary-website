@@ -1,0 +1,34 @@
+{
+  "posts": [
+    {
+      "id": "chakra",
+      "category": "Chakra Guide",
+      "title": "Understanding the Seven Chakras: A Complete Guide",
+      "excerpt": "Discover the ancient wisdom of chakras and how they influence your physical, emotional, and spiritual well-being.",
+      "content": "<h2>Understanding the Seven Chakras: A Complete Guide</h2><p>The chakra system is an ancient Indian concept that describes seven energy centers in the human body. Each chakra corresponds to specific physical, emotional, and spiritual aspects of our being.</p><h3>The Seven Chakras:</h3><ul><li><strong>Root Chakra (Muladhara):</strong> Located at the base of the spine, governs survival, security, and basic needs.</li><li><strong>Sacral Chakra (Svadhisthana):</strong> Located below the navel, governs creativity, sexuality, and emotions.</li><li><strong>Solar Plexus Chakra (Manipura):</strong> Located in the upper abdomen, governs personal power and confidence.</li><li><strong>Heart Chakra (Anahata):</strong> Located in the center of the chest, governs love, compassion, and relationships.</li><li><strong>Throat Chakra (Vishuddha):</strong> Located in the throat, governs communication and self-expression.</li><li><strong>Third Eye Chakra (Ajna):</strong> Located between the eyebrows, governs intuition and wisdom.</li><li><strong>Crown Chakra (Sahasrara):</strong> Located at the top of the head, governs spiritual connection and enlightenment.</li></ul><p>Our chakra-balancing oils are specifically formulated to support each energy center, helping you maintain harmony and balance in your daily life.</p>",
+      "image": "Chakra Guide",
+      "date": "2025-01-15",
+      "author": "Suma Apothecary"
+    },
+    {
+      "id": "aromatherapy",
+      "category": "Aromatherapy",
+      "title": "Aromatherapy for Beginners: Essential Oils Guide",
+      "excerpt": "Start your aromatherapy journey with this comprehensive guide to essential oils and their healing properties.",
+      "content": "<h2>Aromatherapy for Beginners: Essential Oils Guide</h2><p>Aromatherapy is the practice of using essential oils for therapeutic purposes. These concentrated plant extracts have been used for thousands of years to promote physical and emotional well-being.</p><h3>Popular Essential Oils and Their Benefits:</h3><ul><li><strong>Lavender:</strong> Promotes relaxation and sleep, reduces stress and anxiety</li><li><strong>Peppermint:</strong> Improves focus and energy, relieves headaches</li><li><strong>Eucalyptus:</strong> Supports respiratory health, clears congestion</li><li><strong>Tea Tree:</strong> Natural antibacterial and antifungal properties</li><li><strong>Chamomile:</strong> Calming and soothing, promotes restful sleep</li><li><strong>Rosemary:</strong> Improves memory and concentration</li></ul><p>Our ceramic diffusers are designed to gently release these therapeutic aromas, creating a peaceful and healing environment in your home.</p>",
+      "image": "Aromatherapy",
+      "date": "2025-01-10",
+      "author": "Suma Apothecary"
+    },
+    {
+      "id": "product-care",
+      "category": "Product Care",
+      "title": "How to Care for Your Ceramic Diffuser",
+      "excerpt": "Keep your handcrafted ceramic diffuser in perfect condition with these simple care and maintenance tips.",
+      "content": "<h2>How to Care for Your Ceramic Diffuser</h2><p>Your handcrafted ceramic diffuser is a beautiful and functional piece that will last for years with proper care. Here are some tips to keep it in perfect condition:</p><h3>Daily Care:</h3><ul><li>Clean the diffuser after each use with warm water and mild soap</li><li>Allow it to dry completely before storing</li><li>Store in a cool, dry place away from direct sunlight</li></ul><h3>Deep Cleaning:</h3><ul><li>Soak in warm water with baking soda for stubborn residue</li><li>Use a soft brush to clean hard-to-reach areas</li><li>Avoid harsh chemicals or abrasive cleaners</li></ul><h3>Essential Oil Tips:</h3><ul><li>Use only pure essential oils, not synthetic fragrances</li><li>Start with 3-5 drops and adjust based on your preference</li><li>Rotate different oils to prevent buildup</li><li>Clean thoroughly when switching between different oil types</li></ul><p>With proper care, your ceramic diffuser will continue to bring beauty and wellness to your space for many years to come.</p>",
+      "image": "Product Care",
+      "date": "2025-01-05",
+      "author": "Suma Apothecary"
+    }
+  ]
+} 
