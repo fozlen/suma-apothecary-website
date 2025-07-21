@@ -1,25 +1,35 @@
-# Admin Panel Security
-admin/config.js
-admin/config.local.js
-admin/credentials.js
-
-# Environment files
+# Environment variables
 .env
 .env.local
 .env.production
-.env.staging
+
+# API Keys and sensitive data
+mailchimp-config.js
+api-keys.txt
+
+# Node modules
+node_modules/
 
 # Logs
 *.log
-logs/
+npm-debug.log*
 
-# Database
-*.db
-*.sqlite
+# Runtime data
+pids
+*.pid
+*.seed
 
-# Temporary files
-*.tmp
-*.temp
+# Coverage directory used by tools like istanbul
+coverage
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
 
 # OS generated files
 .DS_Store
@@ -29,17 +39,4 @@ logs/
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Backup files
-*.backup
-*.bak
-
-# Config backups
-config.backup.js
 

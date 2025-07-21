@@ -1,0 +1,10 @@
+[build]
+  functions = "netlify/functions"
+
+# Environment variables should be set in Netlify Dashboard
+# Site settings → Environment variables  
+# This prevents exposing sensitive API keys in the repository
+
+[build.environment]
+  # Disable secrets scanning for public information
+  SECRETS_SCAN_OMIT_KEYS = "CONTACT_EMAIL,WEBSITE_URL" 

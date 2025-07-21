@@ -113,3 +113,4 @@ The website includes sample blog posts in three categories:
 
 **© 2025 Suma Apothecary - Handcrafted with love in Türkiye**
 
+# Newsletter sistemi aktif - Mon Jul 21 22:54:16 +03 2025
